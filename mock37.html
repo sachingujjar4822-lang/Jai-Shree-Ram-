@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 37 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 37</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total: GK+CA 18, Math+Reasoning 6, English 10, Hindi 16)
+    const questions = [
+      // ===== Static GK + Current Affairs (18) =====
+      { question: "प्रश्न 1: भारतीय संविधान की ‘उद्देशिका’ में कितने आदर्श/आशय उल्लिखित हैं?", options: ["चार", "पाँच", "छह", "सात"], answer: "चार" },
+      { question: "प्रश्न 2: ‘नीति-निर्देशक तत्त्व’ किस देश के संविधान से प्रेरित हैं?", options: ["अमेरिका", "आयरलैंड", "ब्रिटेन", "फ्रांस"], answer: "आयरलैंड" },
+      { question: "प्रश्न 3: ‘किला राय पिथोरा’ किस शासक से संबंधित है?", options: ["अकबर", "कुतुबुद्दीन ऐबक", "प्रथम पृथ्वीराज चौहान", "अलाउद्दीन खिलजी"], answer: "प्रथम पृथ्वीराज चौहान" },
+      { question: "प्रश्न 4: ‘कौन बनेगा करोड़पति’ का पहला सीज़न किस वर्ष प्रसारित हुआ?", options: ["1999", "2000", "2001", "2002"], answer: "2000" },
+      { question: "प्रश्न 5: भारत में ‘रक्षा अनुसंधान एवं विकास संगठन (DRDO)’ की स्थापना कब हुई?", options: ["1948", "1958", "1969", "1971"], answer: "1958" },
+      { question: "प्रश्न 6: ‘कंचनजंघा’ किस राज्य/क्षेत्र में स्थित है?", options: ["सिक्किम", "अरुणाचल प्रदेश", "हिमाचल प्रदेश", "उत्तराखंड"], answer: "सिक्किम" },
+      { question: "प्रश्न 7: ‘रेशम मार्ग (Silk Route)’ ऐतिहासिक रूप से किसके लिए प्रसिद्ध था?", options: ["मसाले का व्यापार", "रेशम व सांस्कृतिक आदान-प्रदान", "घोड़ों का व्यापार", "हथियारों का व्यापार"], answer: "रेशम व सांस्कृतिक आदान-प्रदान" },
+      { question: "प्रश्न 8: ‘राष्ट्रिय आय’ के आकलन के लिए भारत में कौन-सी संस्था प्रमुख है?", options: ["NABARD", "NSO", "NITI Aayog", "SEBI"], answer: "NSO" },
+      { question: "प्रश्न 9: ‘ब्लू इकॉनोमी’ का अभिप्राय मुख्यतः किससे है?", options: ["वन-आधारित अर्थव्यवस्था", "नदी/समुद्री संसाधन आधारित विकास", "खनन", "हथकरघा"], answer: "नदी/समुद्री संसाधन आधारित विकास" },
+      { question: "प्रश्न 10: ‘दांडी यात्रा’ किस वर्ष शुरू हुई थी?", options: ["1928", "1930", "1932", "1934"], answer: "1930" },
+      { question: "प्रश्न 11: ‘जीवाश्म ईंधन’ में कौन सम्मिलित नहीं है?", options: ["कोयला", "पेट्रोलियम", "प्राकृतिक गैस", "एथेनॉल"], answer: "एथेनॉल" },
+      { question: "प्रश्न 12: ‘रोहतांग सुरंग (अटल टनल)’ किस राज्य/केंद्रशासित प्रदेश में है?", options: ["जम्मू-कश्मीर", "हिमाचल प्रदेश", "उत्तराखंड", "लद्दाख"], answer: "हिमाचल प्रदेश" },
+      { question: "प्रश्न 13: ‘भारत का संविधान’ किस भाषा में मूल रूप से हस्तलिखित है?", options: ["हिंदी और अंग्रेज़ी", "सिर्फ़ अंग्रेज़ी", "संस्कृत", "उर्दू"], answer: "हिंदी और अंग्रेज़ी" },
+      { question: "प्रश्न 14: ‘वन नेशन, वन राशन कार्ड’ योजना का लक्ष्य क्या है?", options: ["डिजिटल भुगतान", "राशन की पोर्टेबिलिटी", "कृषि बीमा", "स्किल विकास"], answer: "राशन की पोर्टेबिलिटी" },
+      { question: "प्रश्न 15: ‘कैलाश सत्यार्थी’ को नोबेल शांति पुरस्कार किस श्रेणी के कार्य हेतु मिला?", options: ["बाल अधिकार", "पर्यावरण", "शिक्षा सुधार", "स्वास्थ्य"], answer: "बाल अधिकार" },
+      { question: "प्रश्न 16: ‘कोहिनूर हीरा’ मूल रूप से कहाँ से निकला माना जाता है?", options: ["ओडिशा", "आंध्र प्रदेश", "गोलकुंडा/आंध्र", "मध्य प्रदेश"], answer: "गोलकुंडा/आंध्र" },
+      { question: "प्रश्न 17: ‘रामसर स्थल’ शब्द किससे संबंधित है?", options: ["वन्यजीव अभयारण्य", "आर्द्रभूमि संरक्षण", "विश्व धरोहर", "जैवमंडल आरक्षित क्षेत्र"], answer: "आर्द्रभूमि संरक्षण" },
+      { question: "प्रश्न 18: ‘अंतरिक्ष में भेजा गया पहला भारतीय नागरिक’ कौन थे?", options: ["राकेश शर्मा", "कल्पना चावला", "सुनीता विलियम्स", "व्योममित्र"], answer: "राकेश शर्मा" },
+
+      // ===== Maths + Reasoning (6) =====
+      { question: "प्रश्न 19: किसी वस्तु का क्रय मूल्य ₹1,500 है। 12% लाभ पर विक्रय मूल्य (₹) क्या होगा?", options: ["₹1,620", "₹1,650", "₹1,680", "₹1,700"], answer: "₹1,680" },
+      { question: "प्रश्न 20: A और B मिलकर 12 दिन में काम पूरा करते हैं, A अकेले 20 दिन में करता है। B अकेले कितने दिन में करेगा?", options: ["24 दिन", "30 दिन", "40 दिन", "60 दिन"], answer: "30 दिन" },
+      { question: "प्रश्न 21: औसत: सात संख्याओं का औसत 18 है। यदि छह संख्याओं का योग 96 है, सातवीं संख्या?", options: ["18", "24", "30", "26"], answer: "30" },
+      { question: "प्रश्न 22: श्रृंखला पूरी करें: 3, 7, 13, 21, 31, ?", options: ["41", "43", "45", "47"], answer: "43" },
+      { question: "प्रश्न 23: किसी धनराशि पर 2 वर्ष हेतु 10% वार्षिक साधारण ब्याज ₹800 है। मूलधन (₹)?", options: ["₹3,500", "₹4,000", "₹4,500", "₹5,000"], answer: "₹4,000" },
+      { question: "प्रश्न 24: यदि A:B = 5:8 और B:C = 4:7, तो A:C = ?", options: ["5:14", "10:28", "20:56 (सरल 5:14)", "8:5"], answer: "5:14" },
+
+      // ===== English (10) =====
+      { question: "Q25: Synonym of ‘Alleviate’.", options: ["Aggravate", "Mitigate", "Exacerbate", "Irritate"], answer: "Mitigate" },
+      { question: "Q26: Fill in the blank: He insisted ____ paying the bill.", options: ["to", "on", "for", "at"], answer: "on" },
+      { question: "Q27: Antonym of ‘Candid’.", options: ["Frank", "Open", "Sincere", "Deceitful"], answer: "Deceitful" },
+      { question: "Q28: Choose the correctly spelled word.", options: ["Maintenence", "Maintenance", "Maintainance", "Maintanence"], answer: "Maintenance" },
+      { question: "Q29: Error spotting: ‘Neither of the players were fit.’ Find the error.", options: ["Neither of the players", "were", "fit", "No error"], answer: "were" },
+      { question: "Q30: One word: ‘A person who knows everything’.", options: ["Omnipresent", "Omnipotent", "Omniscient", "Obstinate"], answer: "Omniscient" },
+      { question: "Q31: Choose the correct tense: By next week, we ____ the project.", options: ["complete", "completed", "will complete", "will have completed"], answer: "will have completed" },
+      { question: "Q32: Passive voice: ‘They will announce the result tomorrow.’", options: ["The result will announce tomorrow.", "The result is announced tomorrow.", "The result will be announced tomorrow.", "The result will have announced tomorrow."], answer: "The result will be announced tomorrow." },
+      { question: "Q33: Idiom: ‘Cut to the chase’ means —", options: ["Avoid the main point", "Come to the main point", "Speak indirectly", "Waste time"], answer: "Come to the main point" },
+      { question: "Q34: Fill in the blank: I am not accustomed ____ spicy food.", options: ["to eat", "for eating", "to eating", "with eating"], answer: "to eating" },
+
+      // ===== Hindi (16) =====
+      { question: "प्रश्न 35: ‘कबीर’ की रचनाओं का संकलन किस नाम से प्रसिद्ध है?", options: ["साखी संग्रह", "बीजक", "दोहा मंजरी", "पदावली"], answer: "बीजक" },
+      { question: "प्रश्न 36: ‘दोहा’ में कुल कितने मात्रिक चरण होते हैं?", options: ["दो", "तीन", "चार", "छह"], answer: "चार" },
+      { question: "प्रश्न 37: ‘करुण’ रस का स्थायी भाव क्या है?", options: ["श्रृंगार", "हास", "शोक", "वीर"], answer: "शोक" },
+      { question: "प्रश्न 38: ‘कर्म’ का कारक चिह्न सामान्यतः कौन-सा है?", options: ["से", "को", "का/के/की", "में"], answer: "को" },
+      { question: "प्रश्न 39: ‘उत्प्रेक्षा अलंकार’ में क्या विशेषता होती है?", options: ["अतिशयोक्ति", "संभावित समानता का संकेत", "ध्वनि-योजना", "विपर्यास"], answer: "संभावित समानता का संकेत" },
+      { question: "प्रश्न 40: ‘कवि-कोकिल’ किसे कहा गया है?", options: ["सूरदास", "जयशंकर प्रसाद", "कालीदास", "महादेवी वर्मा"], answer: "सूरदास" },
+      { question: "प्रश्न 41: ‘समास’ का शाब्दिक अर्थ क्या है?", options: ["विस्तार", "संक्षेप", "विलोम", "परिवर्तन"], answer: "संक्षेप" },
+      { question: "प्रश्न 42: ‘महाभारत’ के रचयिता माने जाते हैं—", options: ["वाल्मीकि", "व्यास", "तुलसीदास", "भवभूति"], answer: "व्यास" },
+      { question: "प्रश्न 43: शुद्ध वर्तनी चुनिए—", options: ["अविश्कार", "अविष्कार", "आविष्कार", "आविषकर"], answer: "आविष्कार" },
+      { question: "прश्न 44: ‘कवि समाज का दर्पण होता है’— यह किस अलंकार का उदाहरण है?", options: ["रूपक", "मानवीकरण", "उत्प्रेक्षा", "उपमा"], answer: "रूपक" },
+      { question: "प्रश्न 45: ‘निर्मला’ उपन्यास के लेखक कौन हैं?", options: ["प्रेमचंद", "जयशंकर प्रसाद", "भगवतीचरण वर्मा", "धनपत राय"], answer: "प्रेमचंद" },
+      { question: "प्रश्न 46: ‘हिंदी दिवस’ कब मनाया जाता है?", options: ["14 नवम्बर", "5 सितम्बर", "14 सितम्बर", "26 जनवरी"], answer: "14 सितम्बर" },
+      { question: "प्रश्न 47: ‘कौन’ का विलोम चुनिए।", options: ["क्या", "कोई", "नहीं", "सब"], answer: "नहीं" },
+      { question: "प्रश्न 48: ‘जननी जन्मभूमिश्च स्वर्गादपि गरीयसी’— यह किस भाषा का वाक्य है?", options: ["संस्कृत", "पाली", "प्राकृत", "अपभ्रंश"], answer: "संस्कृत" },
+      { question: "प्रश्न 49: ‘भोर’ का तत्सम रूप क्या है?", options: ["प्रभात", "प्रातः", "उषा", "अरुणोदय"], answer: "प्रातः" },
+      { question: "प्रश्न 50: ‘गीतांजलि’ के रचयिता कौन हैं?", options: ["रवीन्द्रनाथ ठाकुर", "हरिवंश राय बच्चन", "जयशंकर प्रसाद", "महादेवी वर्मा"], answer: "रवीन्द्रनाथ ठाकुर" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
+```0
