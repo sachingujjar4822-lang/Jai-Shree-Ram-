@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 42 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f7; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 12px #bbb; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #ecf0f1; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    .next { background: #2980b9; color: #fff; }
+    .back { background: #7f8c8d; color: #fff; }
+    .submit { background: #27ae60; color: #fff; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: #e74c3c; }
+    .result { margin-top: 20px; padding: 15px; background: #f8f9f9; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 42</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total): Science 15, GK+CA 15, Math+Reasoning 8, English 6, Hindi 6
+    const questions = [
+      // ===== Science (15) =====
+      { question: "प्रश्न 1: रक्त में ऑक्सीजन वहन करने वाला रंजक है—", options: ["हीमोस्यानिन", "क्लोरोफिल", "हीमोग्लोबिन", "मायोग्लोबिन"], answer: "हीमोग्लोबिन" },
+      { question: "प्रश्न 2: प्रकाश वर्ष किसका माप है?", options: ["समय", "दूरी", "उर्जा", "चमक"], answer: "दूरी" },
+      { question: "प्रश्न 3: pH = 2 वाला घोल कैसा होगा?", options: ["क्षारीय", "तटस्थ", "अम्लीय", "लवणीय"], answer: "अम्लीय" },
+      { question: "प्रश्न 4: ट्रांजिस्टर मुख्यतः किन पदार्थों से बनते हैं?", options: ["धातु", "अर्धचालक", "चालक", "निष्क्रिय गैस"], answer: "अर्धचालक" },
+      { question: "प्रश्न 5: मनुष्य में इंसुलिन किस अंग से स्रावित होती है?", options: ["यकृत", "अग्न्याशय", "गुर्दा", "प्लीहा"], answer: "अग्न्याशय" },
+      { question: "प्रश्न 6: ऊर्जा का SI मात्रक क्या है?", options: ["न्यूटन", "जूल", "वॉट", "पास्कल"], answer: "जूल" },
+      { question: "प्रश्न 7: ओजोन परत सबसे अधिक किस मंडल में पाई जाती है?", options: ["क्षोभमंडल", "समतापमंडल", "मध्य मण्डल", "आयनोंस्फीयर"], answer: "समतापमंडल" },
+      { question: "प्रश्न 8: मानव आँख में छवि किस हिस्से पर बनती है?", options: ["कॉर्निया", "पुतली", "रेटिना", "लेंस"], answer: "रेटिना" },
+      { question: "प्रश्न 9: ‘ब्लू-vitriol’ किसका सामान्य नाम है?", options: ["FeSO4·7H2O", "CuSO4·5H2O", "Na2CO3·10H2O", "KAl(SO4)2·12H2O"], answer: "CuSO4·5H2O" },
+      { question: "प्रश्न 10: किस ग्रह के सबसे अधिक उपग्रह हैं?", options: ["बृहस्पति", "शनि", "यूरेनस", "नेपच्यून"], answer: "शनि" },
+      { question: "प्रश्न 11: DNA से mRNA बनने की प्रक्रिया कहलाती है—", options: ["ट्रांसलेशन", "ट्रांसक्रिप्शन", "रेप्लिकेशन", "म्यूटेशन"], answer: "ट्रांसक्रिप्शन" },
+      { question: "प्रश्न 12: ध्वनि निर्वात में क्यों नहीं चलती?", options: ["माध्यम आवश्यक है", "ऊर्जा नहीं है", "आवृति कम है", "तरंग लम्बाई शून्य है"], answer: "माध्यम आवश्यक है" },
+      { question: "प्रश्न 13: हाइड्रोक्लोरिक अम्ल का सूत्र है—", options: ["H2SO4", "HNO3", "HCl", "H2CO3"], answer: "HCl" },
+      { question: "प्रश्न 14: पौधों में जल के ऊपर की ओर जाने की क्रिया—", options: ["अपसरण", "परासरण", "वाष्पोत्सर्जन खिंचाव", "प्रसरण"], answer: "वाष्पोत्सर्जन खिंचाव" },
+      { question: "प्रश्न 15: विद्युत प्रतिरोध की SI इकाई—", options: ["वोल्ट", "एम्पीयर", "ओम", "वॉट"], answer: "ओम" },
+
+      // ===== Static GK + Current Affairs (15) =====
+      { question: "प्रश्न 16: 'दीनदयाल उपाध्याय' किस विचारधारा से जुड़े थे?", options: ["समाजवाद", "अखंड भारत", "एकात्म मानववाद", "मार्क्सवाद"], answer: "एकात्म मानववाद" },
+      { question: "प्रश्न 17: 'कोणार्क सूर्य मंदिर' किस राज्य में है?", options: ["ओडिशा", "आंध्र प्रदेश", "तमिलनाडु", "केरल"], answer: "ओडिशा" },
+      { question: "प्रश्न 18: 'शांति वन' किस नेता की समाधि है?", options: ["लाल बहादुर शास्त्री", "जवाहरलाल नेहरू", "इंदिरा गांधी", "राजीव गांधी"], answer: "जवाहरलाल नेहरू" },
+      { question: "ప్రश్న 19: विश्व स्वास्थ्य संगठन (WHO) का मुख्यालय कहाँ है?", options: ["न्यूयॉर्क", "जेनेवा", "रोम", "पेरिस"], answer: "जेनेवा" },
+      { question: "प्रश्न 20: 'अटल टनल' किस दर्रे के नीचे बनी है?", options: ["रोहतांग", "जोज़िला", "नाथू ला", "खारदुंग ला"], answer: "रोहतांग" },
+      { question: "प्रश्न 21: 'भारत का केरल पुनर्जागरण' किससे सम्बद्ध है?", options: ["नारायण गुरु", "राजा राममोहन राय", "ईश्वरचंद्र विद्यासागर", "विवेकानंद"], answer: "नारायण गुरु" },
+      { question: "प्रश्न 22: 'गिर राष्ट्रीय उद्यान' किसके लिए प्रसिद्ध है?", options: ["एक-शृंगी गैंडा", "एशियाई शेर", "हाथी", "हिम-तेंदुआ"], answer: "एशियाई शेर" },
+      { question: "प्रश्न 23: 'NABARD' का मुख्य कार्य किससे सम्बंधित है?", options: ["विदेश व्यापार", "कृषि एवं ग्रामीण विकास", "रेलवे", "खनन"], answer: "कृषि एवं ग्रामीण विकास" },
+      { question: "प्रश्न 24: भारतीय योजना आयोग को किससे प्रतिस्थापित किया गया?", options: ["NITI Aayog", "Finance Commission", "CAG", "SEBI"], answer: "NITI Aayog" },
+      { question: "प्रश्न 25: 'जी-20' में भारत की अध्यक्षता किस वर्ष रही?", options: ["2019", "2020", "2023", "2025"], answer: "2023" },
+      { question: "प्रश्न 26: 'कोहिमा' किस राज्य की राजधानी है?", options: ["मिजोरम", "मेघालय", "नागालैंड", "मणिपुर"], answer: "नागालैंड" },
+      { question: "प्रश्न 27: 'हाथी गुफाएँ (एलिफेंटा)' कहाँ स्थित हैं?", options: ["गुजरात", "महाराष्ट्र", "गोवा", "कर्नाटक"], answer: "महाराष्ट्र" },
+      { question: "प्रश्न 28: 'पंजाब केसरी' किस स्वतंत्रता सेनानी का उपनाम है?", options: ["लाला लाजपत राय", "बाल गंगाधर तिलक", "बिपिन चंद्र पाल", "सुभाष बोस"], answer: "लाला लाजपत राय" },
+      { question: "प्रश्न 29: 'अटल भूजल योजना' का उद्देश्य क्या है?", options: ["स्वच्छ हवा", "भूजल प्रबंधन", "कृषि बीमा", "स्वास्थ्य बीमा"], answer: "भूजल प्रबंधन" },
+      { question: "प्रश्न 30: 'राष्ट्रीय मतदाता दिवस' कब मनाया जाता है?", options: ["25 जनवरी", "26 जनवरी", "2 अक्टूबर", "1 जुलाई"], answer: "25 जनवरी" },
+
+      // ===== Maths + Reasoning (8) =====
+      { question: "प्रश्न 31: यदि किसी राशि पर 2 वर्ष में 5% वार्षिक दर से साधारण ब्याज ₹500 है, तो मूलधन (₹)?", options: ["₹4,500", "₹5,000", "₹5,500", "₹6,000"], answer: "₹5,000" },
+      { question: "प्रश्न 32: अनुपात सरल कीजिए: 0.75 : 1.25", options: ["3:5", "5:3", "15:25", "6:10"], answer: "3:5" },
+      { question: "प्रश्न 33: एक वस्तु को 20% छूट के बाद ₹1,600 में बेचा गया। अंकित मूल्य (₹)?", options: ["₹1,920", "₹2,000", "₹2,050", "₹2,200"], answer: "₹2,000" },
+      { question: "प्रश्न 34: क्रम पूरा करें: 7, 14, 28, 56, ?", options: ["84", "98", "112", "126"], answer: "112" },
+      { question: "प्रश्न 35: औसत: पाँच संख्याओं का औसत 26 है। चार संख्याएँ 20, 24, 28, 30 हैं। पाँचवीं संख्या?", options: ["28", "30", "32", "36"], answer: "28" },
+      { question: "प्रश्न 36: समय और कार्य: A 10 दिन में, B 15 दिन में काम करते हैं। साथ मिलकर कितने दिनों में?", options: ["6", "6.5", "5", "8"], answer: "6" },
+      { question: "प्रश्न 37: ट्रेन 54 किमी/घं से चलकर 30 सेकंड में खंभा पार करती है। ट्रेन की लंबाई (मी)?", options: ["350", "300", "450", "250"], answer: "450" },
+      { question: "प्रश्न 38: घड़ी में 5 बजकर 24 मिनट पर सुइयों के बीच कोण (लगभग)?", options: ["138°", "132°", "120°", "114°"], answer: "132°" },
+
+      // ===== English (6) =====
+      { question: "Q39: Choose the correct synonym of 'Meticulous'.", options: ["Careless", "Thorough", "Hasty", "Casual"], answer: "Thorough" },
+      { question: "Q40: Fill in the blank: She insisted ____ paying the bill.", options: ["on", "to", "for", "with"], answer: "on" },
+      { question: "Q41: Antonym of 'Benevolent'.", options: ["Kind", "Malevolent", "Generous", "Humane"], answer: "Malevolent" },
+      { question: "Q42: Correct passive: 'They are building a bridge.'", options: ["A bridge is being built.", "A bridge was built.", "A bridge has built.", "A bridge will being built."], answer: "A bridge is being built." },
+      { question: "Q43: One word: 'One who studies earthquakes.'", options: ["Seismologist", "Geographer", "Geologist", "Astronomer"], answer: "Seismologist" },
+      { question: "Q44: Spot the error: 'Neither of the answers are correct.'", options: ["Neither of", "the answers", "are", "correct"], answer: "are" },
+
+      // ===== Hindi (6) =====
+      { question: "प्रश्न 45: 'साकेत' किस कवि की रचना है?", options: ["जयशंकर प्रसाद", "सुमित्रानंदन पंत", "रामधारी सिंह दिनकर", "मैथिलीशरण गुप्त"], answer: "मैथिलीशरण गुप्त" },
+      { question: "प्रश्न 46: 'उपसर्ग' का अर्थ है—", options: ["शब्द का अंत भाग", "शब्द के पहले जुड़ने वाला भाग", "समास", "विशेषण"], answer: "शब्द के पहले जुड़ने वाला भाग" },
+      { question: "प्रश्न 47: 'लौह पुरुष' किसे कहा जाता है?", options: ["लाल बहादुर शास्त्री", "सुभाष बोस", "सरदार पटेल", "भीमराव आंबेडकर"], answer: "सरदार पटेल" },
+      { question: "प्रश्न 48: शुद्ध वाक्य चुनिए:", options: ["वह पानी पिएगा।", "वह पानी पीएगा।", "वह पानी पियेंगा।", "वह पानी पियेगा।"], answer: "वह पानी पिएगा।" },
+      { question: "प्रश्न 49: 'रस' का सही मेल— 'वीर रस' का स्थायी भाव?", options: ["रति", "क्रोध", "उत्साह", "हास"], answer: "उत्साह" },
+      { question: "प्रश्न 50: 'गोदान' उपन्यास के लेखक हैं—", options: ["प्रेमचंद", "भगवतीचरण वर्मा", "जैनेंद्र कुमार", "रेणु"], answer: "प्रेमचंद" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
+```0
