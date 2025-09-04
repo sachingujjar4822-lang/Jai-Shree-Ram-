@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 6 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #bbb; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-weight: bold; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #eef; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    .next { background: #007bff; color: white; }
+    .back { background: #6c757d; color: white; }
+    .submit { background: #28a745; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 18px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #f1f3f5; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 6</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      } else {
+        submitQuiz();
+      }
+    }, 1000);
+
+    // 50 Questions for Mock Test 6
+    const questions = [
+      { question: "प्रश्न 1: 144 का वर्गमूल क्या है?", options: ["10", "12", "14", "16"], answer: "12" },
+      { question: "प्रश्न 2: यदि 5 पेन की कीमत 50 रुपये है तो 1 पेन की कीमत क्या होगी?", options: ["5", "10", "15", "20"], answer: "10" },
+      { question: "प्रश्न 3: भारत का सबसे बड़ा रेगिस्तान कौन सा है?", options: ["थार", "सहारा", "गोबी", "कालाहारी"], answer: "थार" },
+      { question: "प्रश्न 4: सूर्य किस गैस से बना है?", options: ["हाइड्रोजन", "ऑक्सीजन", "कार्बन डाइऑक्साइड", "हीलियम"], answer: "हाइड्रोजन" },
+      { question: "प्रश्न 5: 'कंप्यूटर का जनक' किसे कहा जाता है?", options: ["चार्ल्स बैबेज", "आइंस्टीन", "न्यूटन", "बिल गेट्स"], answer: "चार्ल्स बैबेज" },
+      { question: "प्रश्न 6: 1 किमी = कितने मीटर?", options: ["100", "1000", "10", "500"], answer: "1000" },
+      { question: "प्रश्न 7: 'शून्य' की खोज किसने की?", options: ["आर्यभट्ट", "भास्कराचार्य", "रामानुजन", "वराहमिहिर"], answer: "आर्यभट्ट" },
+      { question: "प्रश्न 8: भारत का सबसे बड़ा राज्य क्षेत्रफल के अनुसार कौन सा है?", options: ["राजस्थान", "मध्य प्रदेश", "महाराष्ट्र", "उत्तर प्रदेश"], answer: "राजस्थान" },
+      { question: "प्रश्न 9: ओलंपिक खेल कितने वर्षों में होते हैं?", options: ["2", "3", "4", "5"], answer: "4" },
+      { question: "प्रश्न 10: 'श्वेत क्रांति' किससे संबंधित है?", options: ["दूध उत्पादन", "तेल उत्पादन", "धान उत्पादन", "कपास उत्पादन"], answer: "दूध उत्पादन" },
+      { question: "प्रश्न 11: 1000 का 25% कितना होगा?", options: ["100", "200", "250", "300"], answer: "250" },
+      { question: "प्रश्न 12: 'द्रव्यमान' की SI इकाई क्या है?", options: ["किलोग्राम", "ग्राम", "टन", "मीटर"], answer: "किलोग्राम" },
+      { question: "प्रश्न 13: भारत का सबसे पुराना पर्वत कौन सा है?", options: ["अरावली", "हिमालय", "सह्याद्रि", "नीलगिरी"], answer: "अरावली" },
+      { question: "प्रश्न 14: 'UNO' की स्थापना कब हुई?", options: ["1945", "1950", "1940", "1935"], answer: "1945" },
+      { question: "प्रश्न 15: 'विद्युत धारा' की SI इकाई क्या है?", options: ["एम्पीयर", "वोल्ट", "वाट", "ओम"], answer: "एम्पीयर" },
+      { question: "प्रश्न 16: 50 × 12 = ?", options: ["500", "600", "650", "700"], answer: "600" },
+      { question: "प्रश्न 17: 'पंचायती राज' किस वर्ष लागू हुआ?", options: ["1992", "1950", "1962", "1975"], answer: "1992" },
+      { question: "प्रश्न 18: 'फुटबॉल' में एक टीम में कितने खिलाड़ी होते हैं?", options: ["9", "10", "11", "12"], answer: "11" },
+      { question: "प्रश्न 19: 'गति' = ?", options: ["दूरी ÷ समय", "बल ÷ क्षेत्रफल", "द्रव्यमान × वेग", "दबाव ÷ समय"], answer: "दूरी ÷ समय" },
+      { question: "प्रश्न 20: 'जीवाश्म ईंधन' कौन सा है?", options: ["कोयला", "लोहा", "पानी", "गैस"], answer: "कोयला" },
+      { question: "प्रश्न 21: 15 × 15 = ?", options: ["200", "215", "225", "250"], answer: "225" },
+      { question: "प्रश्न 22: 'दिल्ली सल्तनत' का पहला शासक कौन था?", options: ["कुतुबुद्दीन ऐबक", "इल्तुतमिश", "अलाउद्दीन खिलजी", "बलबन"], answer: "कुतुबुद्दीन ऐबक" },
+      { question: "प्रश्न 23: 'DNA' का पूरा नाम क्या है?", options: ["डीऑक्सीराइबोन्यूक्लिक एसिड", "डायनाइट्रोजन एसिड", "डबल न्यूक्लिक एसिड", "डायऑक्साइड न्यूक्लिक"], answer: "डीऑक्सीराइबोन्यूक्लिक एसिड" },
+      { question: "प्रश्न 24: 'भारतीय राष्ट्रीय कांग्रेस' की स्थापना कब हुई?", options: ["1885", "1905", "1920", "1942"], answer: "1885" },
+      { question: "प्रश्न 25: 200 का 10% कितना है?", options: ["10", "15", "20", "25"], answer: "20" },
+      { question: "प्रश्न 26: 'आकाशगंगा' का अंग्रेजी नाम क्या है?", options: ["Milky Way", "Galaxy", "Universe", "Solar System"], answer: "Milky Way" },
+      { question: "प्रश्न 27: 'प्रकाश वर्ष' किसकी इकाई है?", options: ["दूरी", "समय", "गति", "ऊर्जा"], answer: "दूरी" },
+      { question: "प्रश्न 28: 'हरित क्रांति' किससे जुड़ी है?", options: ["कृषि", "उद्योग", "पर्यावरण", "वन"], answer: "कृषि" },
+      { question: "प्रश्न 29: 'GST' कब लागू हुआ?", options: ["2017", "2016", "2015", "2018"], answer: "2017" },
+      { question: "प्रश्न 30: 30 ÷ 0.5 = ?", options: ["15", "60", "50", "20"], answer: "60" },
+      { question: "प्रश्न 31: 'भारत का संविधान' कब लागू हुआ?", options: ["26 जनवरी 1950", "15 अगस्त 1947", "26 नवम्बर 1949", "2 अक्टूबर 1952"], answer: "26 जनवरी 1950" },
+      { question: "प्रश्न 32: 'भारत का पहला प्रधानमंत्री' कौन था?", options: ["जवाहरलाल नेहरू", "सरदार पटेल", "लाल बहादुर शास्त्री", "राजेन्द्र प्रसाद"], answer: "जवाहरलाल नेहरू" },
+      { question: "प्रश्न 33: 'ऊर्जा का SI इकाई' क्या है?", options: ["जूल", "वाट", "एम्पीयर", "न्यूटन"], answer: "जूल" },
+      { question: "प्रश्न 34: 'ISRO' का मुख्यालय कहाँ है?", options: ["बेंगलुरु", "दिल्ली", "चेन्नई", "मुंबई"], answer: "बेंगलुरु" },
+      { question: "प्रश्न 35: 7 × 8 = ?", options: ["54", "56", "58", "60"], answer: "56" },
+      { question: "प्रश्न 36: 'भारत का राष्ट्रीय फल' कौन सा है?", options: ["आम", "केला", "सेब", "अमरूद"], answer: "आम" },
+      { question: "प्रश्न 37: 'ओजोन परत' किसे रोकती है?", options: ["पराबैंगनी किरणें", "गर्मी", "धूप", "धूल"], answer: "पराबैंगनी किरणें" },
+      { question: "प्रश्न 38: 'माउंट एवरेस्ट' की ऊँचाई कितनी है?", options: ["8848 मीटर", "8000 मीटर", "9000 मीटर", "8500 मीटर"], answer: "8848 मीटर" },
+      { question: "प्रश्न 39: 'ब्लूटूथ' किस तकनीक से जुड़ा है?", options: ["Wireless Communication", "विज्ञान", "कंप्यूटर", "गणित"], answer: "Wireless Communication" },
+      { question: "प्रश्न 40: 'जंतर मंतर' किस शहर में है?", options: ["जयपुर", "दिल्ली", "उज्जैन", "वाराणसी"], answer: "जयपुर" },
+      { question: "प्रश्न 41: 'पानी का रासायनिक सूत्र' क्या है?", options: ["H2O", "CO2", "NaCl", "O2"], answer: "H2O" },
+      { question: "प्रश्न 42: 'वृक्षारोपण दिवस' कब मनाया जाता है?", options: ["1 जुलाई", "5 जून", "15 अगस्त", "2 अक्टूबर"], answer: "1 जुलाई" },
+      { question: "प्रश्न 43: 'भारतीय नौसेना दिवस' कब मनाया जाता है?", options: ["4 दिसम्बर", "26 जनवरी", "15 अगस्त", "10 मार्च"], answer: "4 दिसम्बर" },
+      { question: "प्रश्न 44: 'भारत का सबसे ऊँचा जलप्रपात' कौन सा है?", options: ["जोग जलप्रपात", "धुआँधार", "दुधसागर", "केंचनझर"], answer: "जोग जलप्रपात" },
+      { question: "प्रश्न 45: 25 का वर्गफल कितना है?", options: ["525", "600", "625", "700"], answer: "625" },
+      { question: "प्रश्न 46: 'नासा' किस देश की अंतरिक्ष संस्था है?", options: ["अमेरिका", "भारत", "रूस", "जापान"], answer: "अमेरिका" },
+      { question: "प्रश्न 47: 'शांति का नोबेल पुरस्कार' किस शहर में दिया जाता है?", options: ["ओस्लो", "जिनेवा", "लंदन", "पेरिस"], answer: "ओस्लो" },
+      { question: "प्रश्न 48: 'विश्व जनसंख्या दिवस' कब मनाया जाता है?", options: ["11 जुलाई", "5 जून", "21 जून", "10 दिसम्बर"], answer: "11 जुलाई" },
+      { question: "प्रश्न 49: 'भारतीय सेना दिवस' कब मनाया जाता है?", options: ["15 जनवरी", "26 जनवरी", "15 अगस्त", "2 अक्टूबर"], answer: "15 जनवरी" },
+      { question: "प्रश्न 50: 'बॉलीवुड का पहला टॉकीज (बोलती) फिल्म' कौन सी थी?", options: ["आलम आरा", "मदर इंडिया", "किस्मत", "आन"], answer: "आलम आरा" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
