@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 43 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 43</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total)
+    const questions = [
+      // Science (1–15)
+      { question: "प्रश्न 1: हाइड्रोजन का परमाणु क्रमांक कितना होता है?", options: ["1", "2", "3", "4"], answer: "1" },
+      { question: "प्रश्न 2: पाचन में एमाइलेज एंजाइम कौन से पोषक तत्व को तोड़ता है?", options: ["प्रोटीन", "वसा", "कार्बोहाइड्रेट", "विटामिन"], answer: "कार्बोहाइड्रेट" },
+      { question: "प्रश्न 3: प्रकाश वर्ष किसका माप है?", options: ["समय", "ऊर्जा", "दूरी", "वेग"], answer: "दूरी" },
+      { question: "प्रश्न 4: ‘DNA’ का पूरा नाम क्या है?", options: ["Deoxyribonucleic Acid", "Dioxyribonitric Acid", "Deoxyribosome Acid", "None"], answer: "Deoxyribonucleic Acid" },
+      { question: "प्रश्न 5: ध्वनि की चाल सबसे अधिक कहाँ होती है?", options: ["हवा", "जल", "लोहे", "निर्वात"], answer: "लोहे" },
+      { question: "प्रश्न 6: मानव शरीर में कौन सा अंग ‘RBC’ बनाता है?", options: ["फेफड़े", "हृदय", "अस्थिमज्जा", "किडनी"], answer: "अस्थिमज्जा" },
+      { question: "प्रश्न 7: सूर्य की सतह का तापमान लगभग कितना है?", options: ["2000 K", "4000 K", "6000 K", "10000 K"], answer: "6000 K" },
+      { question: "प्रश्न 8: मनुष्य के शरीर में सबसे छोटी हड्डी कौन सी है?", options: ["स्टेपीज", "फीमर", "टिबिया", "रेडियस"], answer: "स्टेपीज" },
+      { question: "प्रश्न 9: बल्ब का फिलामेंट किससे बना होता है?", options: ["तांबा", "टंगस्टन", "एल्यूमिनियम", "लोहे"], answer: "टंगस्टन" },
+      { question: "प्रश्न 10: आवर्त सारणी का पहला तत्व कौन सा है?", options: ["हीलियम", "हाइड्रोजन", "लिथियम", "ऑक्सीजन"], answer: "हाइड्रोजन" },
+      { question: "प्रश्न 11: मनुष्य के शरीर में कौन सा अंग इंसुलिन बनाता है?", options: ["यकृत", "अग्न्याशय", "गुर्दा", "फेफड़े"], answer: "अग्न्याशय" },
+      { question: "प्रश्न 12: ग्रीन हाउस गैस में सबसे प्रमुख कौन सी है?", options: ["CO2", "O2", "N2", "He"], answer: "CO2" },
+      { question: "प्रश्न 13: बल की SI इकाई क्या है?", options: ["वाट", "जूल", "न्यूटन", "पास्कल"], answer: "न्यूटन" },
+      { question: "प्रश्न 14: रक्त का लाल रंग किस कारण से होता है?", options: ["हीमोग्लोबिन", "आरएनए", "डीएनए", "प्लाज्मा"], answer: "हीमोग्लोबिन" },
+      { question: "प्रश्न 15: दूध में पाया जाने वाला प्रमुख शर्करा कौन सा है?", options: ["ग्लूकोज", "फ्रुक्टोज", "लैक्टोज", "सुक्रोज"], answer: "लैक्टोज" },
+
+      // GK + Current Affairs (16–30)
+      { question: "प्रश्न 16: संविधान सभा के अध्यक्ष कौन थे?", options: ["राजेन्द्र प्रसाद", "डॉ. अम्बेडकर", "नेहरू", "सुभाष बोस"], answer: "राजेन्द्र प्रसाद" },
+      { question: "प्रश्न 17: भारत की पहली महिला प्रधानमंत्री कौन थीं?", options: ["सरोजिनी नायडू", "इंदिरा गांधी", "प्रतिभा पाटिल", "सुषमा स्वराज"], answer: "इंदिरा गांधी" },
+      { question: "प्रश्न 18: हरित क्रांति के जनक कौन हैं?", options: ["नॉर्मन बोरलॉग", "एम.एस. स्वामीनाथन", "विनोबा भावे", "राजा राममोहन राय"], answer: "एम.एस. स्वामीनाथन" },
+      { question: "प्रश्न 19: भारत का राष्ट्रीय फल कौन सा है?", options: ["केला", "आम", "सेब", "अनार"], answer: "आम" },
+      { question: "प्रश्न 20: G-20 शिखर सम्मेलन 2023 कहाँ आयोजित हुआ?", options: ["दिल्ली", "मुंबई", "बेंगलुरु", "जयपुर"], answer: "दिल्ली" },
+      { question: "प्रश्न 21: विश्व का सबसे बड़ा महाद्वीप कौन सा है?", options: ["अफ्रीका", "एशिया", "यूरोप", "ऑस्ट्रेलिया"], answer: "एशिया" },
+      { question: "प्रश्न 22: UNO का मुख्यालय कहाँ है?", options: ["पेरिस", "लंदन", "न्यूयॉर्क", "जिनेवा"], answer: "न्यूयॉर्क" },
+      { question: "प्रश्न 23: भारत का पहला उपग्रह कौन सा है?", options: ["भास्कर", "आर्यभट्ट", "इनसैट", "रोहिणी"], answer: "आर्यभट्ट" },
+      { question: "प्रश्न 24: 2024 ओलंपिक कहाँ होंगे?", options: ["लंदन", "पेरिस", "टोक्यो", "बीजिंग"], answer: "पेरिस" },
+      { question: "प्रश्न 25: भारत का राष्ट्रीय ध्वज किसने डिज़ाइन किया था?", options: ["पिंगली वेंकैया", "गांधीजी", "नेहरू", "पटेल"], answer: "पिंगली वेंकैया" },
+      { question: "प्रश्न 26: नोबेल पुरस्कार पाने वाले पहले भारतीय कौन थे?", options: ["गांधीजी", "रवींद्रनाथ टैगोर", "सी.वी. रमन", "अमर्त्य सेन"], answer: "रवींद्रनाथ टैगोर" },
+      { question: "प्रश्न 27: भारत में योजना आयोग की स्थापना कब हुई?", options: ["1950", "1952", "1960", "1965"], answer: "1950" },
+      { question: "प्रश्न 28: अंतरिक्ष में जाने वाली पहली भारतीय महिला कौन थीं?", options: ["कल्पना चावला", "सुनीता विलियम्स", "प्रतिभा पाटिल", "इंदिरा गांधी"], answer: "कल्पना चावला" },
+      { question: "प्रश्न 29: भारतीय रिजर्व बैंक का मुख्यालय कहाँ है?", options: ["दिल्ली", "मुंबई", "कोलकाता", "चेन्नई"], answer: "मुंबई" },
+      { question: "प्रश्न 30: भारत का सबसे बड़ा राज्य क्षेत्रफल के आधार पर कौन सा है?", options: ["उत्तर प्रदेश", "मध्य प्रदेश", "राजस्थान", "बिहार"], answer: "राजस्थान" },
+
+      // Maths + Reasoning (31–38)
+      { question: "प्रश्न 31: यदि 12 × 12 = ?", options: ["124", "144", "132", "154"], answer: "144" },
+      { question: "प्रश्न 32: यदि किसी संख्या का 25% = 50 है तो संख्या कितनी होगी?", options: ["100", "150", "200", "250"], answer: "200" },
+      { question: "प्रश्न 33: एक आयत का क्षेत्रफल = 48 वर्ग सेमी, लंबाई = 12 सेमी, चौड़ाई कितनी होगी?", options: ["2", "3", "4", "6"], answer: "4" },
+      { question: "प्रश्न 34: 729 का घनमूल क्या है?", options: ["7", "8", "9", "11"], answer: "9" },
+      { question: "प्रश्न 35: यदि 15 आदमी 12 दिन में काम खत्म करते हैं, तो 10 आदमी कितने दिन में करेंगे?", options: ["18", "20", "22", "24"], answer: "18" },
+      { question: "प्रश्न 36: 3, 6, 12, 24, ? अगला संख्या क्या होगी?", options: ["36", "40", "48", "52"], answer: "48" },
+      { question: "प्रश्न 37: किसी त्रिभुज के कोणों का योग कितना होता है?", options: ["90°", "180°", "270°", "360°"], answer: "180°" },
+      { question: "प्रश्न 38: यदि A+B=20 और A-B=4 तो A कितना है?", options: ["10", "12", "8", "16"], answer: "12" },
+
+      // English (39–44)
+      { question: "प्रश्न 39: Choose the synonym of 'Brave'.", options: ["Coward", "Courageous", "Weak", "Lazy"], answer: "Courageous" },
+      { question: "प्रश्न 40: Choose the antonym of 'Hot'.", options: ["Warm", "Cool", "Cold", "Boiling"], answer: "Cold" },
+      { question: "प्रश्न 41: Fill in the blank: He ___ to school daily.", options: ["go", "goes", "gone", "going"], answer: "goes" },
+      { question: "प्रश्न 42: One word for 'A place where books are kept'?", options: ["Hospital", "Library", "School", "Bank"], answer: "Library" },
+      { question: "प्रश्न 43: Choose the correct spelling.", options: ["Recieve", "Receive", "Receeve", "Receve"], answer: "Receive" },
+      { question: "प्रश्न 44: What is the past tense of 'Write'?", options: ["Writed", "Wrote", "Written", "Writes"], answer: "Wrote" },
+
+      // Hindi (45–50)
+      { question: "प्रश्न 45: 'रामायण' के रचयिता कौन हैं?", options: ["वेद व्यास", "वाल्मीकि", "तुलसीदास", "कालीदास"], answer: "वाल्मीकि" },
+      { question: "प्रश्न 46: 'भारत भारती' के कवि कौन हैं?", options: ["मैथिलीशरण गुप्त", "जयशंकर प्रसाद", "सूरदास", "कबीर"], answer: "मैथिलीशरण गुप्त" },
+      { question: "प्रश्न 47: 'रहीम' किसके दरबार में थे?", options: ["अकबर", "जहांगीर", "शेरशाह", "हुमायूं"], answer: "अकबर" },
+      { question: "प्रश्न 48: 'सूरदास' किस भक्ति धारा से जुड़े थे?", options: ["सगुण", "निर्गुण", "सूफी", "निराला"], answer: "सगुण" },
+      { question: "प्रश्न 49: 'कविता की आत्मा' किसे कहा जाता है?", options: ["रस", "छंद", "अलंकार", "वर्ण"], answer: "रस" },
+      { question: "प्रश्न 50: 'मधुशाला' के कवि कौन हैं?", options: ["सूरदास", "हरिवंश राय बच्चन", "रामधारी सिंह दिनकर", "जयशंकर प्रसाद"], answer: "हरिवंश राय बच्चन" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
