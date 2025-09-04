@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 48 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 48</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total)
+    const questions = [
+      // Science (18)
+      { question: "प्रश्न 1: डीएनए का पूरा नाम क्या है?", options: ["डिऑक्सीराइबोन्यूक्लिक एसिड", "डबल न्यूक्लिक एसिड", "डिप न्यूक्लिक एजेंट", "डिऑक्सीरिबो न्यूक्लिक एजेंट"], answer: "डिऑक्सीराइबोन्यूक्लिक एसिड" },
+      { question: "प्रश्न 2: सूर्य का प्रकाश पृथ्वी तक पहुँचने में कितना समय लेता है?", options: ["8 मिनट 20 सेकंड", "5 मिनट", "12 मिनट", "2 मिनट"], answer: "8 मिनट 20 सेकंड" },
+      { question: "प्रश्न 3: मानव शरीर में सबसे कठोर पदार्थ कौन सा है?", options: ["हड्डी", "एनामेल", "कैल्शियम", "डेंटिन"], answer: "एनामेल" },
+      { question: "प्रश्न 4: प्रकाश वर्ष किसे मापा जाता है?", options: ["समय", "गति", "दूरी", "घनत्व"], answer: "दूरी" },
+      { question: "प्रश्न 5: विद्युत धारा की इकाई क्या है?", options: ["वोल्ट", "ओम", "एम्पियर", "वाट"], answer: "एम्पियर" },
+      { question: "प्रश्न 6: पेनिसिलिन की खोज किसने की थी?", options: ["अलेक्जेंडर फ्लेमिंग", "लुई पाश्चर", "जेन्नर", "डार्विन"], answer: "अलेक्जेंडर फ्लेमिंग" },
+      { question: "प्रश्न 7: श्वसन के समय कौन सी गैस बाहर निकलती है?", options: ["ऑक्सीजन", "कार्बन डाइऑक्साइड", "नाइट्रोजन", "हाइड्रोजन"], answer: "कार्बन डाइऑक्साइड" },
+      { question: "प्रश्न 8: पृथ्वी का वायुमंडल मुख्यतः किससे बना है?", options: ["ऑक्सीजन", "कार्बन डाइऑक्साइड", "नाइट्रोजन", "हाइड्रोजन"], answer: "नाइट्रोजन" },
+      { question: "प्रश्न 9: 'हिग्स बोसॉन' को और किस नाम से जाना जाता है?", options: ["गॉड पार्टिकल", "डार्क मैटर", "न्यूट्रिनो", "ग्लूऑन"], answer: "गॉड पार्टिकल" },
+      { question: "प्रश्न 10: रॉकेट का सिद्धांत किस नियम पर आधारित है?", options: ["न्यूटन का प्रथम नियम", "न्यूटन का द्वितीय नियम", "न्यूटन का तृतीय नियम", "गुरुत्वाकर्षण का नियम"], answer: "न्यूटन का तृतीय नियम" },
+      { question: "प्रश्न 11: जल का रासायनिक सूत्र क्या है?", options: ["H2O", "CO2", "O2", "H2"], answer: "H2O" },
+      { question: "प्रश्न 12: लाल रक्त कणिकाओं का निर्माण कहाँ होता है?", options: ["हृदय", "अस्थिमज्जा", "यकृत", "मस्तिष्क"], answer: "अस्थिमज्जा" },
+      { question: "प्रश्न 13: प्रकाश का अपवर्तन किस कारण से होता है?", options: ["गति परिवर्तन", "आयतन परिवर्तन", "दाब परिवर्तन", "आकार परिवर्तन"], answer: "गति परिवर्तन" },
+      { question: "प्रश्न 14: ओजोन परत किसे रोकती है?", options: ["अवरक्त किरणें", "अल्ट्रावॉयलेट किरणें", "रेडियो तरंगें", "गामा किरणें"], answer: "अल्ट्रावॉयलेट किरणें" },
+      { question: "प्रश्न 15: क्लोरोफिल किस धातु का यौगिक है?", options: ["लोहा", "मैग्नीशियम", "कैल्शियम", "सोडियम"], answer: "मैग्नीशियम" },
+      { question: "प्रश्न 16: बल्ब का फिलामेंट किस धातु का बना होता है?", options: ["तांबा", "लोहे", "टंगस्टन", "एल्यूमिनियम"], answer: "टंगस्टन" },
+      { question: "प्रश्न 17: सबसे हल्की धातु कौन सी है?", options: ["लोहा", "लिथियम", "सोडियम", "पोटैशियम"], answer: "लिथियम" },
+      { question: "प्रश्न 18: पृथ्वी पर सबसे अधिक मात्रा में पाई जाने वाली गैस कौन सी है?", options: ["ऑक्सीजन", "नाइट्रोजन", "हाइड्रोजन", "कार्बन डाइऑक्साइड"], answer: "नाइट्रोजन" },
+
+      // GK + Current Affairs (16)
+      { question: "प्रश्न 19: भारत के प्रथम उपराष्ट्रपति कौन थे?", options: ["डॉ. राजेन्द्र प्रसाद", "डॉ. सर्वपल्ली राधाकृष्णन", "जाकिर हुसैन", "विवि गिरी"], answer: "डॉ. सर्वपल्ली राधाकृष्णन" },
+      { question: "प्रश्न 20: भारत का राष्ट्रीय फल कौन सा है?", options: ["आम", "केला", "सेब", "अमरूद"], answer: "आम" },
+      { question: "प्रश्न 21: भारत का सबसे ऊँचा जलप्रपात कौन सा है?", options: ["जोग फॉल्स", "दुधसागर", "कुंचिकल फॉल्स", "शिवनसमुद्र"], answer: "कुंचिकल फॉल्स" },
+      { question: "प्रश्न 22: अंतर्राष्ट्रीय योग दिवस कब मनाया जाता है?", options: ["21 जून", "5 जून", "15 अगस्त", "2 अक्टूबर"], answer: "21 जून" },
+      { question: "प्रश्न 23: G20 शिखर सम्मेलन 2023 कहाँ हुआ?", options: ["नई दिल्ली", "बीजिंग", "पेरिस", "लंदन"], answer: "नई दिल्ली" },
+      { question: "प्रश्न 24: एशियाई खेल 2023 किस देश में हुए?", options: ["जापान", "भारत", "चीन", "कतर"], answer: "चीन" },
+      { question: "प्रश्न 25: नोबेल पुरस्कार पाने वाली पहली भारतीय महिला कौन थीं?", options: ["इंदिरा गांधी", "कल्पना चावला", "मदर टेरेसा", "किरण बेदी"], answer: "मदर टेरेसा" },
+      { question: "प्रश्न 26: भारत में पहली महिला प्रधानमंत्री कौन थीं?", options: ["प्रतिभा पाटिल", "सोनिया गांधी", "सुषमा स्वराज", "इंदिरा गांधी"], answer: "इंदिरा गांधी" },
+      { question: "प्रश्न 27: भारतीय रिजर्व बैंक की स्थापना कब हुई?", options: ["1935", "1947", "1950", "1920"], answer: "1935" },
+      { question: "प्रश्न 28: 'जय जवान जय किसान' का नारा किसने दिया?", options: ["महात्मा गांधी", "लाल बहादुर शास्त्री", "सुभाष चंद्र बोस", "पंडित नेहरू"], answer: "लाल बहादुर शास्त्री" },
+      { question: "प्रश्न 29: भारत का राष्ट्रीय पशु कौन सा है?", options: ["सिंह", "हाथी", "बाघ", "हिरण"], answer: "बाघ" },
+      { question: "प्रश्न 30: 'गीता रहस्य' पुस्तक किसने लिखी?", options: ["लोकमान्य तिलक", "महात्मा गांधी", "बाल गंगाधर तिलक", "सुभाष चंद्र बोस"], answer: "लोकमान्य तिलक" },
+      { question: "प्रश्न 31: UNO का मुख्यालय कहाँ है?", options: ["वाशिंगटन", "जेनेवा", "न्यूयॉर्क", "पेरिस"], answer: "न्यूयॉर्क" },
+      { question: "प्रश्न 32: भारत में योजना आयोग कब स्थापित हुआ?", options: ["1947", "1950", "1952", "1960"], answer: "1950" },
+      { question: "प्रश्न 33: भारत का सबसे बड़ा राज्य क्षेत्रफल के आधार पर कौन सा है?", options: ["उत्तर प्रदेश", "मध्य प्रदेश", "राजस्थान", "महाराष्ट्र"], answer: "राजस्थान" },
+      { question: "प्रश्न 34: 'वेदों की ओर लौटो' का नारा किसने दिया?", options: ["राजा राममोहन राय", "स्वामी विवेकानंद", "स्वामी दयानंद सरस्वती", "महात्मा गांधी"], answer: "स्वामी दयानंद सरस्वती" },
+
+      // Maths + Reasoning (10)
+      { question: "प्रश्न 35: 144 का वर्गमूल क्या है?", options: ["10", "11", "12", "13"], answer: "12" },
+      { question: "प्रश्न 36: यदि A=2, B=4, C=6, तो Z का मान क्या होगा?", options: ["52", "54", "60", "50"], answer: "52" },
+      { question: "प्रश्न 37: एक वस्तु 60 km/h की गति से 2 घंटे चलती है, दूरी कितनी होगी?", options: ["100 km", "120 km", "150 km", "180 km"], answer: "120 km" },
+      { question: "प्रश्न 38: 2, 6, 12, 20, ? श्रृंखला में अगली संख्या क्या होगी?", options: ["28", "30", "32", "36"], answer: "30" },
+      { question: "प्रश्न 39: एक आदमी 1500 रुपये में वस्तु खरीदता है और 10% लाभ पर बेचता है, विक्रय मूल्य क्या होगा?", options: ["1600", "1620", "1650", "1700"], answer: "1650" },
+      { question: "प्रश्न 40: 5 व्यक्ति 20 दिन में काम करते हैं, वही काम 10 व्यक्ति कितने दिन में करेंगे?", options: ["5 दिन", "10 दिन", "15 दिन", "20 दिन"], answer: "10 दिन" },
+      { question: "प्रश्न 41: 50% of 200 कितना होगा?", options: ["50", "100", "150", "200"], answer: "100" },
+      { question: "प्रश्न 42: एक घड़ी में 3 बजने पर सूइयों के बीच कोण कितना होता है?", options: ["60°", "90°", "120°", "180°"], answer: "90°" },
+      { question: "प्रश्न 43: यदि किसी संख्या का 25% = 50 है, तो संख्या क्या होगी?", options: ["100", "150", "200", "250"], answer: "200" },
+      { question: "प्रश्न 44: 15 : 225 :: 25 : ?", options: ["400", "425", "500", "625"], answer: "625" },
+
+      // Hindi (6)
+      { question: "प्रश्न 45: 'रामचरितमानस' के रचयिता कौन हैं?", options: ["वेदव्यास", "तुलसीदास", "वाल्मीकि", "कबीर"], answer: "तुलसीदास" },
+      { question: "प्रश्न 46: 'गोदान' उपन्यास किसने लिखा?", options: ["मुंशी प्रेमचंद", "सूरदास", "जयशंकर प्रसाद", "महादेवी वर्मा"], answer: "मुंशी प्रेमचंद" },
+      { question: "प्रश्न 47: 'कामायनी' के लेखक कौन हैं?", options: ["रामधारी सिंह दिनकर", "जयशंकर प्रसाद", "सुभद्राकुमारी चौहान", "मैथिलीशरण गुप्त"], answer: "जयशंकर प्रसाद" },
+      { question: "प्रश्न 48: 'साकेत' काव्य के रचयिता कौन हैं?", options: ["सूरदास", "रामधारी सिंह दिनकर", "मैथिलीशरण गुप्त", "कबीर"], answer: "मैथिलीशरण गुप्त" },
+      { question: "प्रश्न 49: 'मधुशाला' किसकी रचना है?", options: ["सूरदास", "हरिवंश राय बच्चन", "महादेवी वर्मा", "जयशंकर प्रसाद"], answer: "हरिवंश राय बच्चन" },
+      { question: "प्रश्न 50: 'झांसी की रानी' कविता किसकी है?", options: ["मैथिलीशरण गुप्त", "सुभद्राकुमारी चौहान", "महादेवी वर्मा", "जयशंकर प्रसाद"], answer: "सुभद्राकुमारी चौहान" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
