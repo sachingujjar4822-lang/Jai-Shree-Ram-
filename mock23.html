@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 23 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 23</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total)
+    const questions = [
+      // Maths – 20
+      { question: "प्रश्न 1: यदि (x+5)(x-3) = 0 हो, तो x के मान क्या होंगे?", options: ["-5, 3", "5, -3", "3, 5", "-3, -5"], answer: "3, -5" },
+      { question: "प्रश्न 2: 5 आदमी किसी काम को 20 दिन में पूरा करते हैं। 10 आदमी वही काम कितने दिन में करेंगे?", options: ["5", "8", "10", "12"], answer: "10" },
+      { question: "प्रश्न 3: यदि 2x + 3 = 11, तो x का मान क्या है?", options: ["2", "3", "4", "5"], answer: "4" },
+      { question: "प्रश्न 4: एक वस्तु 20% छूट के बाद 800 रु. में खरीदी गई। अंकित मूल्य कितना है?", options: ["900", "950", "1000", "1100"], answer: "1000" },
+      { question: "प्रश्न 5: एक त्रिभुज के कोणों का अनुपात 2:3:4 है। सबसे बड़ा कोण कितना होगा?", options: ["80°", "100°", "120°", "140°"], answer: "80°" },
+      { question: "प्रश्न 6: √2116 का मान क्या होगा?", options: ["44", "45", "46", "47"], answer: "46" },
+      { question: "प्रश्न 7: किसी वस्तु का क्रय मूल्य 600 है और विक्रय मूल्य 720 है। लाभ प्रतिशत क्या होगा?", options: ["15%", "20%", "22%", "25%"], answer: "20%" },
+      { question: "प्रश्न 8: यदि a = 3 और b = 4, तो (a² + b²) का मान क्या होगा?", options: ["12", "16", "25", "30"], answer: "25" },
+      { question: "प्रश्न 9: किसी वर्ग का क्षेत्रफल 484 वर्ग से.मी. है। उसकी भुजा कितनी होगी?", options: ["20", "21", "22", "23"], answer: "22" },
+      { question: "प्रश्न 10: यदि 40% of x = 120 है, तो x क्या होगा?", options: ["200", "250", "280", "300"], answer: "300" },
+      { question: "प्रश्न 11: 12, 24, 48, ? , 192 – गुम संख्या क्या होगी?", options: ["60", "72", "96", "108"], answer: "96" },
+      { question: "प्रश्न 12: यदि sin θ = 5/13, तो cos θ का मान क्या होगा?", options: ["12/13", "13/12", "5/12", "4/5"], answer: "12/13" },
+      { question: "प्रश्न 13: 2/5 ÷ 4/7 का मान क्या होगा?", options: ["7/10", "7/8", "8/7", "5/14"], answer: "7/10" },
+      { question: "प्रश्न 14: किसी घन का पृष्ठीय क्षेत्रफल 150 से.मी.² है। उसकी भुजा कितनी होगी?", options: ["4", "5", "6", "7"], answer: "5" },
+      { question: "प्रश्न 15: 45, 50, 55, ? , 65 – रिक्त स्थान क्या होगा?", options: ["56", "58", "60", "62"], answer: "60" },
+      { question: "प्रश्न 16: यदि A:B = 2:3 और B:C = 4:5, तो A:B:C क्या होगा?", options: ["8:12:15", "2:4:5", "4:6:5", "6:8:15"], answer: "8:12:15" },
+      { question: "प्रश्न 17: एक दुकानदार 1200 रु. की वस्तु पर 10% छूट देता है। विक्रय मूल्य क्या होगा?", options: ["1000", "1050", "1080", "1100"], answer: "1080" },
+      { question: "प्रश्न 18: 144 और 216 का HCF क्या होगा?", options: ["24", "36", "48", "72"], answer: "72" },
+      { question: "प्रश्न 19: यदि tan θ = 3/4, तो sec θ का मान क्या होगा?", options: ["5/4", "4/5", "3/5", "5/3"], answer: "5/4" },
+      { question: "प्रश्न 20: एक कार 60 किमी/घंटा की गति से 2 घंटे चलती है। तय दूरी कितनी होगी?", options: ["100", "110", "120", "130"], answer: "120" },
+
+      // Reasoning – 10
+      { question: "प्रश्न 21: श्रृंखला में गुम संख्या: 3, 6, 12, 24, ?", options: ["36", "48", "50", "60"], answer: "48" },
+      { question: "प्रश्न 22: यदि A = 1, B = 2, तो Z का मान क्या होगा?", options: ["24", "25", "26", "27"], answer: "26" },
+      { question: "प्रश्न 23: 25 : 5 :: 49 : ?", options: ["6", "7", "8", "9"], answer: "7" },
+      { question: "प्रश्न 24: पिता का पुत्र से वही संबंध है, जो माता का किससे होगा?", options: ["पुत्री", "भाई", "बहन", "पिता"], answer: "पुत्री" },
+      { question: "प्रश्न 25: यदि सभी कुत्ते जानवर हैं और कुछ जानवर पालतू हैं, तो निष्कर्ष क्या होगा?", options: ["सभी कुत्ते पालतू हैं", "कुछ जानवर कुत्ते हैं", "कुछ कुत्ते पालतू हो सकते हैं", "कोई भी कुत्ता जानवर नहीं है"], answer: "कुछ कुत्ते पालतू हो सकते हैं" },
+      { question: "प्रश्न 26: यदि एक घड़ी 4 बजे 4 बार बजाने में 12 सेकंड लेती है, तो 8 बजे 8 बार बजाने में कितना समय लगेगा?", options: ["24", "28", "36", "42"], answer: "28" },
+      { question: "प्रश्न 27: यदि ‘DELHI = 35’ तो ‘MUMBAI = ?’", options: ["63", "64", "65", "66"], answer: "64" },
+      { question: "प्रश्न 28: श्रृंखला पूरी करें: 2, 6, 18, 54, ?", options: ["108", "162", "216", "324"], answer: "162" },
+      { question: "प्रश्न 29: आयत में कितनी रेखाएँ सममिति की होती हैं?", options: ["1", "2", "3", "4"], answer: "2" },
+      { question: "प्रश्न 30: Venn आरेख – ‘डॉक्टर, महिला, पुरुष’?", options: ["तीन वृत्त आंशिक रूप से जुड़े", "तीन अलग-अलग वृत्त", "दो जुड़े और तीसरा अलग", "एक वृत्त में दूसरा"], answer: "तीन वृत्त आंशिक रूप से जुड़े" },
+
+      // Science/GK/CA – 20 (Science heavy)
+      { question: "प्रश्न 31: हृदय में कितने कक्ष (Chambers) होते हैं?", options: ["2", "3", "4", "5"], answer: "4" },
+      { question: "प्रश्न 32: सूर्य से सबसे नजदीकी ग्रह कौन सा है?", options: ["पृथ्वी", "बुध", "शुक्र", "मंगल"], answer: "बुध" },
+      { question: "प्रश्न 33: रक्तचाप मापने का यंत्र क्या कहलाता है?", options: ["स्टेथोस्कोप", "स्फिग्मोमैनोमीटर", "बैरोमीटर", "थर्मामीटर"], answer: "स्फिग्मोमैनोमीटर" },
+      { question: "प्रश्न 34: ऑक्सीजन गैस की खोज किसने की थी?", options: ["जोसफ प्रीस्टले", "आइंस्टीन", "न्यूटन", "डल्टन"], answer: "जोसफ प्रीस्टले" },
+      { question: "प्रश्न 35: विद्युत धारा की इकाई क्या है?", options: ["वोल्ट", "एंपियर", "ओम", "जूल"], answer: "एंपियर" },
+      { question: "प्रश्न 36: मानव शरीर में रक्त शुद्ध करने वाला अंग कौन सा है?", options: ["हृदय", "फेफड़ा", "गुर्दा", "अग्न्याशय"], answer: "गुर्दा" },
+      { question: "प्रश्न 37: परमाणु क्रमांक 6 किस तत्व का है?", options: ["ऑक्सीजन", "कार्बन", "नाइट्रोजन", "हीलियम"], answer: "कार्बन" },
+      { question: "प्रश्न 38: विटामिन C की कमी से कौन सी बीमारी होती है?", options: ["स्कर्वी", "रातांधता", "रिकेट्स", "एनीमिया"], answer: "स्कर्वी" },
+      { question: "प्रश्न 39: प्रकाश की गति लगभग कितनी होती है?", options: ["2×10^8 m/s", "3×10^8 m/s", "4×10^8 m/s", "5×10^8 m/s"], answer: "3×10^8 m/s" },
+      { question: "प्रश्न 40: बल की इकाई क्या है?", options: ["जूल", "न्यूटन", "वाट", "पास्कल"], answer: "न्यूटन" },
+      { question: "प्रश्न 41: पृथ्वी पर सबसे अधिक पाया जाने वाला धातु कौन सा है?", options: ["एल्युमिनियम", "लोहा", "तांबा", "जिंक"], answer: "एल्युमिनियम" },
+      { question: "प्रश्न 42: DNA और RNA में कौन सा sugar पाया जाता है?", options: ["ग्लूकोज और माल्टोज", "राइबोज और डिऑक्सीराइबोज", "सुक्रोज और लैक्टोज", "फ्रक्टोज और स्टार्च"], answer: "राइबोज और डिऑक्सीराइबोज" },
+      { question: "प्रश्न 43: मानव शरीर की सबसे छोटी हड्डी कौन सी है?", options: ["फीमर", "स्टेप्स", "ह्यूमरस", "रेडियस"], answer: "स्टेप्स" },
+      { question: "प्रश्न 44: कोशिका सिद्धांत किसने दिया था?", options: ["श्लाइडेन और श्वान", "डार्विन", "डल्टन", "हुक"], answer: "श्लाइडेन और श्वान" },
+      { question: "प्रश्न 45: भारत का पहला परमाणु परीक्षण कहाँ हुआ?", options: ["पोखरण", "तारापुर", "कुडनकुलम", "काकरापार"], answer: "पोखरण" },
+      { question: "प्रश्न 46: 2023 में जी20 शिखर सम्मेलन कहाँ हुआ?", options: ["दिल्ली", "मुंबई", "जयपुर", "पुणे"], answer: "दिल्ली" },
+      { question: "प्रश्न 47: राष्ट्रीय आपदा प्रबंधन प्राधिकरण (NDMA) के अध्यक्ष कौन होते हैं?", options: ["राष्ट्रपति", "प्रधानमंत्री", "गृहमंत्री", "मुख्यमंत्री"], answer: "प्रधानमंत्री" },
+      { question: "प्रश्न 48: भौतिकी में कार्य = बल × ?", options: ["समय", "त्वरण", "विस्थापन", "द्रव्यमान"], answer: "विस्थापन" },
+      { question: "प्रश्न 49: तत्वों की आवर्त सारणी किसने बनाई?", options: ["डाल्टन", "न्यूटन", "मेंडलीफ", "रदरफोर्ड"], answer: "मेंडलीफ" },
+      { question: "प्रश्न 50: ‘क्वारंटाइन’ शब्द किससे संबंधित है?", options: ["स्वास्थ्य", "भूकंप", "राजनीति", "जलवायु"], answer: "स्वास्थ्य" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
