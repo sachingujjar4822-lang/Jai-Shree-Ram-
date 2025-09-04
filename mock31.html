@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 31 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 31</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total: GK+CA 20, English 10, Hindi 20)
+    const questions = [
+      // ---- Static GK + Current Affairs (20) ----
+      { question: "प्रश्न 1: भारतीय संविधान का मसौदा समिति (Drafting Committee) के अध्यक्ष कौन थे?", options: ["डॉ. राजेन्द्र प्रसाद", "डॉ. भीमराव आंबेडकर", "बी.एन. राव", "सी. राजगोपालाचारी"], answer: "डॉ. भीमराव आंबेडकर" },
+      { question: "प्रश्न 2: ‘सारनाथ’ किस राज्य में है?", options: ["उत्तर प्रदेश", "बिहार", "मध्य प्रदेश", "राजस्थान"], answer: "उत्तर प्रदेश" },
+      { question: "प्रश्न 3: विश्व का सबसे बड़ा रेगिस्तान कौन सा है?", options: ["गॉबी", "सहारा", "कैलाहारी", "अरेबियन"], answer: "सहारा" },
+      { question: "प्रश्न 4: RBI का राष्ट्रीयकरण कब हुआ?", options: ["1949", "1950", "1955", "1969"], answer: "1949" },
+      { question: "प्रश्न 5: ‘हरित क्रांति’ के जनक के रूप में भारत में किसे जाना जाता है?", options: ["एम.एस. स्वामीनाथन", "विक्रम साराभाई", "होमी भाभा", "सी.वी. रमन"], answer: "एम.एस. स्वामीनाथन" },
+      { question: "प्रश्न 6: ‘भीमबेटका’ शैलाश्रय किसके लिए प्रसिद्ध हैं?", options: ["बौद्ध स्तूप", "प्रागैतिहासिक चित्रकला", "मुगल चित्रकला", "हड़प्पा नगर योजना"], answer: "प्रागैतिहासिक चित्रकला" },
+      { question: "प्रश्न 7: ‘ब्लू अर्थव्यवस्था’ किससे संबंधित है?", options: ["वन प्रबंधन", "समुद्री संसाधन", "रेगिस्तानी कृषि", "अंतरिक्ष अनुसंधान"], answer: "समुद्री संसाधन" },
+      { question: "प्रश्न 8: 2024 ओलंपिक खेल कहाँ आयोजित हुए?", options: ["टोक्यो", "पेरिस", "लॉस एंजेलिस", "बीजिंग"], answer: "पेरिस" },
+      { question: "प्रश्न 9: ‘काजीरंगा राष्ट्रीय उद्यान’ किसके लिए प्रसिद्ध है?", options: ["एशियाई हाथी", "एक-सींग वाला गैंडा", "हिम तेंदुआ", "शेर"], answer: "एक-सींग वाला गैंडा" },
+      { question: "प्रश्न 10: ‘मेक इन इंडिया’ अभियान का शुभारंभ किस वर्ष हुआ?", options: ["2012", "2014", "2016", "2018"], answer: "2014" },
+      { question: "प्रश्न 11: ‘चोल’ शासक राजराजा I ने कौन सा प्रसिद्ध मंदिर बनवाया?", options: ["बृहदेश्वर मंदिर", "मीनाक्षी मंदिर", "जगन्नाथ मंदिर", "दक्षिणेश्वर"], answer: "बृहदेश्वर मंदिर" },
+      { question: "प्रश्न 12: ‘कावेरी’ नदी का उद्गम कहाँ है?", options: ["त्रिवेणी", "तलक्कावेरी", "गंगोत्री", "महाबलेश्वर"], answer: "तलक्कावेरी" },
+      { question: "प्रश्न 13: ‘राउंड टेबल कॉन्फ्रेंस’ किस शहर में हुई थीं?", options: ["दिल्ली", "लंदन", "पेरिस", "जिनेवा"], answer: "लंदन" },
+      { question: "प्रश्न 14: ‘चंद्रयान-3’ ने चंद्रमा के किस क्षेत्र में सॉफ्ट लैंडिंग की?", options: ["भूमध्यरेखा क्षेत्र", "उत्तर ध्रुवीय क्षेत्र", "दक्षिण ध्रुवीय क्षेत्र", "पश्चिमी मरुस्थल क्षेत्र"], answer: "दक्षिण ध्रुवीय क्षेत्र" },
+      { question: "प्रश्न 15: UNO का मुख्यालय कहाँ है?", options: ["वाशिंगटन", "न्यूयॉर्क", "जिनेवा", "पेरिस"], answer: "न्यूयॉर्क" },
+      { question: "प्रश्न 16: ‘राष्ट्रीय आय’ के आकलन हेतु भारत में मुख्य संस्था कौन है?", options: ["RBI", "NABARD", "NSO", "SEBI"], answer: "NSO" },
+      { question: "प्रश्न 17: ‘कुचिपुड़ी’ नृत्य किस राज्य का शास्त्रीय नृत्य है?", options: ["तमिलनाडु", "आंध्र प्रदेश", "कर्नाटक", "केरल"], answer: "आंध्र प्रदेश" },
+      { question: "प्रश्न 18: ‘भारतीय नौसेना दिवस’ कब मनाया जाता है?", options: ["26 जनवरी", "4 दिसंबर", "15 अगस्त", "8 अक्टूबर"], answer: "4 दिसंबर" },
+      { question: "प्रश्न 19: ‘स्वच्छ भारत मिशन’ (ग्रामीण) का उद्देश्य क्या है?", options: ["डिजिटल भुगतान", "खुले में शौच मुक्त", "हर घर बिजली", "पानी की उपलब्धता"], answer: "खुले में शौच मुक्त" },
+      { question: "प्रश्न 20: ‘अदिति L1/आदित्य-L1’ मिशन का प्रमुख उद्देश्य क्या है?", options: ["मंगलीय सतह अध्ययन", "सौर कोरोना व सौर पवन अध्ययन", "चंद्रमा के ध्रुवीय बर्फ अध्ययन", "शुक्र ग्रह के बादल"], answer: "सौर कोरोना व सौर पवन अध्ययन" },
+
+      // ---- English (10) ----
+      { question: "Q21: Choose the correct antonym of ‘Scarce’.", options: ["Abundant", "Meagre", "Rare", "Scanty"], answer: "Abundant" },
+      { question: "Q22: Fill in the blank: He has been working here ______ 2019.", options: ["for", "since", "from", "by"], answer: "since" },
+      { question: "Q23: One word for ‘a person who loves mankind’.", options: ["Philanthropist", "Misanthrope", "Anthropologist", "Philosopher"], answer: "Philanthropist" },
+      { question: "Q24: Error spotting: ‘Each of the players have received a medal.’", options: ["Each of the players have", "received", "a medal", "No error"], answer: "Each of the players have" },
+      { question: "Q25: Choose the correct spelling.", options: ["Accommodate", "Acommodate", "Accomodate", "Acommodete"], answer: "Accommodate" },
+      { question: "Q26: Idiom: ‘To call a spade a spade’ means —", options: ["To find fault", "To speak frankly", "To avoid truth", "To flatter"], answer: "To speak frankly" },
+      { question: "Q27: Synonym of ‘Eminent’.", options: ["Obscure", "Notorious", "Distinguished", "Ordinary"], answer: "Distinguished" },
+      { question: "Q28: Choose the correct option: I prefer tea ____ coffee.", options: ["than", "to", "over to", "more than"], answer: "to" },
+      { question: "Q29: Passive voice: ‘They will announce the results tomorrow.’", options: ["The results will be announced tomorrow.", "Tomorrow the results announce.", "The results are announcing tomorrow.", "The results has been announced tomorrow."], answer: "The results will be announced tomorrow." },
+      { question: "Q30: Fill in the blank: The committee has ______ decision yet.", options: ["not took", "not taken", "no taken", "not taking"], answer: "not taken" },
+
+      // ---- Hindi (20) ----
+      { question: "प्रश्न 31: ‘कवि’ का तद्भव रूप क्या है?", options: ["कबी", "कव्वा", "कउआ", "कोई नहीं"], answer: "कबी" },
+      { question: "प्रश्न 32: ‘अंधे की लकड़ी’ मुहावरे का अर्थ क्या है?", options: ["अनुपयोगी वस्तु", "सबसे प्रिय वस्तु", "एकमात्र सहारा", "खतरनाक वस्तु"], answer: "एकमात्र सहारा" },
+      { question: "प्रश्न 33: ‘उदास’ का विलोम कौन-सा है?", options: ["शांत", "प्रसन्न", "निराश", "विचलित"], answer: "प्रसन्न" },
+      { question: "प्रश्न 34: ‘क’ + ‘ष’ की संधि से कौन-सा रूप बनेगा?", options: ["क्ष", "कष", "क्ष्य", "क्श"], answer: "क्ष" },
+      { question: "прश्न 35: ‘जयप्रकाश’ में कौन-सा समास है?", options: ["द्वंद्व", "बहुव्रीहि", "तत्पुरुष", "कर्मधारय"], answer: "कर्मधारय" },
+      { question: "प्रश्न 36: ‘सप्ताह’ का पर्यायवाची क्या है?", options: ["हफ्ता", "माह", "वर्ष", "अयन"], answer: "हफ्ता" },
+      { question: "प्रश्न 37: ‘वह घर चला गया’— इसमें ‘वह’ कौन-सा सर्वनाम है?", options: ["अन्यपुरुष", "निजवाचक", "पुरुषवाचक/परपुरुष", "निश्रित"], answer: "पुरुषवाचक/परपुरुष" },
+      { question: "प्रश्न 38: ‘विद्या धन सर्वश्रेष्ठ धन’— इस वाक्य में ‘सर्वश्रेष्ठ’ कौन-सा शब्दभेद है?", options: ["संज्ञा", "सर्वनाम", "विशेषण", "क्रिया"], answer: "विशेषण" },
+      { question: "प्रश्न 39: ‘सुभाषित’ का सही अर्थ क्या है?", options: ["सुंदर कविता", "उत्तम कथन", "सरल गद्य", "लोकगीत"], answer: "उत्तम कथन" },
+      { question: "प्रश्न 40: शुद्ध वाक्य चुनिए —", options: ["मुझे किताबों पढ़ना है", "मुझे किताबें पढ़ना है", "मुझे किताब पढ़ना हैं", "मुझे किताबें पढ़ना हैं"], answer: "मुझे किताबें पढ़ना है" },
+      { question: "प्रश्न 41: ‘जल’ का तत्सम-तद्भव युग्म कौन-सा है?", options: ["जल–पानी", "जल–पाव", "जल–पेय", "जल–पान"], answer: "जल–पानी" },
+      { question: "प्रश्न 42: ‘कर्म’ का बहुवचन क्या है?", options: ["कर्म", "कर्मों", "कर्मा", "कर्मे"], answer: "कर्मों" },
+      { question: "प्रश्न 43: ‘हँसी-ठिठोली’ किस अलंकार का उदाहरण है?", options: ["उपमा", "यमक", "अनुप्रास", "रूपक"], answer: "अनुप्रास" },
+      { question: "प्रश्न 44: ‘जो मेहनत करता है वही सफल होता है’— यह किस प्रकार का वाक्य है?", options: ["सरल", "मिश्र", "संयुक्त", "आकांक्षी"], answer: "मिश्र" },
+      { question: "प्रश्न 45: ‘अशोक’ शब्द में उपसर्ग कौन-सा है?", options: ["अ", "शोक", "ओक", "कोई नहीं"], answer: "अ" },
+      { question: "प्रश्न 46: ‘कृतज्ञ’ शब्द का सही अर्थ क्या है?", options: ["दयालु", "आभारी", "क्रोधित", "कठोर"], answer: "आभारी" },
+      { question: "प्रश्न 47: ‘रातों-रात’ का सही विलोम क्या होगा?", options: ["दिन-दिन", "दिन-दहाड़े", "दिनों-दिन", "दिन-रात"], answer: "दिन-दहाड़े" },
+      { question: "प्रश्न 48: मुहावरा ‘नाक कटना’ का अर्थ क्या है?", options: ["सम्मान बढ़ना", "सम्मान कम होना", "अपमान होना", "कार्य सिद्ध होना"], answer: "अपमान होना" },
+      { question: "प्रश्न 49: ‘गोपाल ने दूध दुहा’— यहाँ ‘दुहा’ कौन-सी क्रिया है?", options: ["सकर्मक", "अकर्मक", "भाववाचक", "संधि"], answer: "सकर्मक" },
+      { question: "प्रश्न 50: ‘राम ही ईश्वर है’— यहाँ ‘ही’ कौन-सा अव्यय है?", options: ["भाववाचक अव्यय", "निपात", "समुच्चयबोधक", "अधिकरण"], answer: "निपात" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
