@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 35 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 35</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total: GK+CA 18, Math+Reasoning 6, English 10, Hindi 16)
+    const questions = [
+      // ===== Static GK + Current Affairs (18) =====
+      { question: "प्रश्न 1: भारतीय संविधान में ‘न्याय, स्वतंत्रता, समता और बंधुता’ किससे लिए गए हैं?", options: ["उद्देशिका (Preamble)", "मौलिक अधिकार", "राज्य नीति निदेशक तत्व", "मौलिक कर्तव्य"], answer: "उद्देशिका (Preamble)" },
+      { question: "прश्न 2: ‘अमरावती’ किस राज्य की प्रस्तावित राजधानी रही है?", options: ["तेलंगाना", "आंध्र प्रदेश", "ओडिशा", "कर्नाटक"], answer: "आंध्र प्रदेश" },
+      { question: "प्रश्न 3: भारतीय चुनाव आयोग के आयुक्तों की नियुक्ति कौन करता है?", options: ["संसद", "मुख्य न्यायाधीश", "राष्ट्रपति", "प्रधानमंत्री"], answer: "राष्ट्रपति" },
+      { question: "प्रश्न 4: ‘काजीरंगा राष्ट्रीय उद्यान’ किसके लिए प्रसिद्ध है?", options: ["बाघ", "एक-सींग वाला गैंडा", "हाथी", "हिम तेंदुआ"], answer: "एक-सींग वाला गैंडा" },
+      { question: "प्रश्न 5: ‘दोहरा कराधान परिहार संधि (DTAA)’ का संबंध किससे है?", options: ["सीमा सुरक्षा", "कर व्यवस्था", "शिक्षा", "स्वास्थ्य"], answer: "कर व्यवस्था" },
+      { question: "प्रश्न 6: ‘भाभा परमाणु अनुसंधान केंद्र (BARC)’ कहाँ स्थित है?", options: ["कोलकाता", "मुंबई", "चेन्नई", "हैदराबाद"], answer: "मुंबई" },
+      { question: "प्रश्न 7: ‘सांची स्तूप’ का निर्माण किसने करवाया था?", options: ["समुद्रगुप्त", "अशोक", "हर्षवर्धन", "चंद्रगुप्त मौर्य"], answer: "अशोक" },
+      { question: "प्रश्न 8: ‘एम-एस-एम-ई’ में ‘M’ का अर्थ क्या है?", options: ["मिनी", "मीडियम", "माइक्रो", "मार्केट"], answer: "माइक्रो" },
+      { question: "प्रश्न 9: ‘नमामि गंगे’ कार्यक्रम किस मंत्रालय के अधीन है?", options: ["जल शक्ति मंत्रालय", "पर्यावरण मंत्रालय", "गृह मंत्रालय", "सड़क परिवहन मंत्रालय"], answer: "जल शक्ति मंत्रालय" },
+      { question: "प्रश्न 10: ‘न्याय का दीपक’ किस न्यायाधीश का उपनाम रहा?", options: ["एम. सी. चगला", "एच. आर. खन्ना", "पी. एन. भगवती", "वाई. वी. चंद्रचूड़"], answer: "एच. आर. खन्ना" },
+      { question: "प्रश्न 11: ‘शेरशाह सूरी’ ने कौन-सा प्रमुख मार्ग विकसित कराया था?", options: ["उत्तरापथ", "ग्रैंड ट्रंक रोड", "दक्षिण पथ", "मालवा मार्ग"], answer: "ग्रैंड ट्रंक रोड" },
+      { question: "प्रश्न 12: ‘कैलाश मानसरोवर’ किस देश में स्थित है?", options: ["भारत", "नेपाल", "भूटान", "चीन (तिब्बत)"], answer: "चीन (तिब्बत)" },
+      { question: "प्रश्न 13: ‘UDAN’ योजना किस क्षेत्र से संबंधित है?", options: ["रेलवे", "हवाई संपर्क", "सड़क", "डाक"], answer: "हवाई संपर्क" },
+      { question: "प्रश्न 14: ‘मुद्रास्फीति’ को नियंत्रित करने के लिए RBI मुख्यतः क्या करता है?", options: ["CRR/रेपो रेट में परिवर्तन", "नए नोट छापना", "बजट लाना", "आयकर घटाना"], answer: "CRR/रेपो रेट में परिवर्तन" },
+      { question: "प्रश्न 15: ‘हड़प्पा सभ्यता’ को किस नाम से भी जाना जाता है?", options: ["वैदिक सभ्यता", "कांस्य युगीन सभ्यता", "लौह युग", "गुप्तकाल"], answer: "कांस्य युगीन सभ्यता" },
+      { question: "प्रश्न 16: ‘नीलगिरी की चाय’ मुख्यतः किस राज्य में उत्पादित होती है?", options: ["केरल", "कर्नाटक", "तमिलनाडु", "आंध्र प्रदेश"], answer: "तमिलनाडु" },
+      { question: "प्रश्न 17: ‘राष्ट्रीय मानवाधिकार आयोग (NHRC)’ का गठन किस वर्ष हुआ?", options: ["1990", "1993", "1996", "2000"], answer: "1993" },
+      { question: "प्रश्न 18: ‘भारत का सांख्यिकीय संगठन—NITI Aayog’ में ‘ITI’ का विस्तार क्या है?", options: ["India Transformation Institute", "Institution for Transforming India", "Institute of Technology India", "Innovation for Transforming India"], answer: "Institution for Transforming India" },
+
+      // ===== Maths + Reasoning (6) =====
+      { question: "प्रश्न 19: किसी संख्या का 40% = 88 है। वह संख्या क्या है?", options: ["200", "210", "220", "230"], answer: "220" },
+      { question: "प्रश्न 20: औसत: पाँच संख्याओं का औसत 26 है। यदि चार संख्याएँ 24, 28, 31, 19 हैं, तो पाँचवीं संख्या क्या है?", options: ["28", "29", "30", "31"], answer: "28" },
+      { question: "प्रश्न 21: अनुपात 7:9 को 4 से गुणा कर दोनों पदों में 6–6 जोड़ें। नया अनुपात?", options: ["28:42", "34:42", "28:30", "34:42 (सरलीकृत 17:21)"], answer: "34:42 (सरलीकृत 17:21)" },
+      { question: "प्रश्न 22: श्रृंखला पूर्ण करें: 5, 11, 19, 29, 41, ?", options: ["53", "55", "57", "59"], answer: "55" },
+      { question: "प्रश्न 23: एक ट्रेन 54 किमी/घं. की गति से 20 सेकंड में पुल पार करती है। ट्रेन की लंबाई 180 मीटर है, तो पुल की लंबाई (मी.)?", options: ["120", "150", "180", "210"], answer: "120" },
+      { question: "प्रश्न 24: यदि SP = ₹1,392 और लाभ % = 16% है, तो CP (₹) क्या है? (निकटतम पूर्णांक)", options: ["₹1,180", "₹1,200", "₹1,260", "₹1,300"], answer: "₹1,200" },
+
+      // ===== English (10) =====
+      { question: "Q25: Choose the correct synonym of ‘Meticulous’.", options: ["Careless", "Sloppy", "Thorough", "Heedless"], answer: "Thorough" },
+      { question: "Q26: Fill in the blank: The book is divided ____ three sections.", options: ["in", "into", "to", "for"], answer: "into" },
+      { question: "Q27: Antonym of ‘Scarcity’.", options: ["Dearth", "Lack", "Abundance", "Paucity"], answer: "Abundance" },
+      { question: "Q28: Correct passive: ‘People speak Hindi in many states.’", options: ["Hindi spoken in many states.", "Hindi is speak in many states.", "Hindi is spoken in many states.", "Hindi are spoken in many states."], answer: "Hindi is spoken in many states." },
+      { question: "Q29: One-word: ‘A person who looks at the bright side of things’.", options: ["Optimist", "Pessimist", "Atheist", "Skeptic"], answer: "Optimist" },
+      { question: "Q30: Error spotting: ‘Each of the boys have a pen.’", options: ["Each of the boys", "have", "a pen", "No error"], answer: "have" },
+      { question: "Q31: Choose the correctly spelled word.", options: ["Accomodation", "Accommodation", "Acommodation", "Accomodattion"], answer: "Accommodation" },
+      { question: "Q32: Fill in the blank: I prefer tea ____ coffee.", options: ["than", "over", "to", "for"], answer: "to" },
+      { question: "Q33: Idiom: ‘Burn the midnight oil’ means —", options: ["Work late at night", "Waste time", "Be careless", "Sleep early"], answer: "Work late at night" },
+      { question: "Q34: Choose the correct tense: He ____ in this unit for five years.", options: ["works", "worked", "has been working", "is work"], answer: "has been working" },
+
+      // ===== Hindi (16) =====
+      { question: "प्रश्न 35: ‘निराला’ किस आंदोलन/धारा से संबंधित हैं?", options: ["छायावाद", "रीतिकाल", "प्रयोगवाद", "प्रगतिवाद"], answer: "छायावाद" },
+      { question: "प्रश्न 36: ‘अलंकार’ का शाब्दिक अर्थ क्या है?", options: ["शोभा देने वाला", "शब्दों की गिनती", "वर्णों की संख्या", "वाक्य-विन्यास"], answer: "शोभा देने वाला" },
+      { question: "प्रश्न 37: ‘किसलय’ का सही पर्यायवाची क्या है?", options: ["अंकुर", "वन", "फल", "बीज"], answer: "अंकुर" },
+      { question: "प्रश्न 38: ‘लोकोक्ति’ और ‘मुहावरे’ में मुख्य भेद क्या है?", options: ["दोनों समान", "लोकोक्ति पूर्ण वाक्य; मुहावरा पद-बन्ध", "मुहावरा पूर्ण वाक्य; लोकोक्ति पद-बन्ध", "दोनों अपूर्ण"], answer: "लोकोक्ति पूर्ण वाक्य; मुहावरा पद-बन्ध" },
+      { question: "प्रश्न 39: ‘रवीन्द्रनाथ ठाकुर’ को ‘गीतांजलि’ के लिए किस पुरस्कार से सम्मानित किया गया?", options: ["भारत रत्न", "नोबेल पुरस्कार", "ज्ञानपीठ", "साहित्य अकादमी"], answer: "नोबेल पुरस्कार" },
+      { question: "प्रश्न 40: शुद्ध वर्तनी चुनिए:", options: ["अध्यक्षीय", "अध्क्षीय", "अध्यक्षीय", "अध्यक्षी"], answer: "अध्यक्षीय" },
+      { question: "प्रश्न 41: ‘मूकाभिनय’ का अर्थ क्या है?", options: ["बिना शब्दों का अभिनय", "तेज़ आवाज़ में अभिनय", "गीत-संगीत सहित अभिनय", "नृत्य-मुद्रा"], answer: "बिना शब्दों का अभिनय" },
+      { question: "प्रश्न 42: ‘द्रौपदी’ का एक अन्य नाम क्या है?", options: ["कृष्णा", "उर्मिला", "तारा", "कौसल्या"], answer: "कृष्णा" },
+      { question: "प्रश्न 43: ‘उपन्यास सम्राट’ की उपाधि किसे दी जाती है?", options: ["जयशंकर प्रसाद", "मुंशी प्रेमचंद", "महादेवी वर्मा", "हरिवंश राय"], answer: "मुंशी प्रेमचंद" },
+      { question: "प्रश्न 44: ‘निराश’ का विलोम क्या है?", options: ["उत्साहित", "आशावान", "प्रसन्न", "आकुल"], answer: "आशावान" },
+      { question: "प्रश्न 45: ‘कर्मवाच्य’ किसे कहते हैं?", options: ["जहाँ कर्ता प्रधान हो", "जहाँ कर्म प्रधान हो", "जहाँ क्रिया न हो", "जहाँ विशेषण न हो"], answer: "जहाँ कर्म प्रधान हो" },
+      { question: "प्रश्न 46: ‘सूरदास’ किस भाषा/बोली के कवि हैं?", options: ["ब्रज", "अवधी", "खड़ी बोली", "मैथिली"], answer: "ब्रज" },
+      { question: "प्रश्न 47: ‘रामचरितमानस’ किस छंद में रचित है?", options: ["दोहा-चौपाई", "रोला", "कुण्डलिया", "घनाक्षरी"], answer: "दोहा-चौपाई" },
+      { question: "प्रश्न 48: ‘कवि सम्मेलन’ में काव्य-पाठ की क्रम व्यवस्था को क्या कहते हैं?", options: ["संयोजन", "अध्यक्षता", "अंकन", "आयोजन"], answer: "अध्यक्षता" },
+      { question: "प्रश्न 49: ‘प्रातःकाल’ का तत्सम रूप क्या है?", options: ["सुबह", "भोर", "प्रभात", "सवेरा"], answer: "प्रभात" },
+      { question: "प्रश्न 50: ‘रश्मिरथी’ का नायक कौन है?", options: ["राम", "अर्जुन", "कर्ण", "कृष्ण"], answer: "कर्ण" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
+```0
