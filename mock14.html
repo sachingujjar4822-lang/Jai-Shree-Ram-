@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 14 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 14</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total — CHSL level; Maths + Reasoning heavy)
+    const questions = [
+      // ----- MATHS (1–25) -----
+      { question: "प्रश्न 1: 361 का वर्गमूल कितना है?", options: ["17", "18", "19", "20"], answer: "19" },
+      { question: "प्रश्न 2: यदि x + 1/x = 5, तो x² + 1/x² = ?", options: ["21", "22", "23", "24"], answer: "23" },
+      { question: "प्रश्न 3: 1250 का 18% = ?", options: ["200", "210", "220", "225"], answer: "225" },
+      { question: "प्रश्न 4: ₹6000 पर 10% वार्षिक दर से 2 वर्ष का चक्रवृद्धि ब्याज (वार्षिक) ?", options: ["₹1200", "₹1260", "₹1300", "₹1360"], answer: "₹1260" },
+      { question: "प्रश्न 5: एक ट्रेन 72 किमी/घं से 1 घंटा 45 मिनट चलती है। दूरी = ?", options: ["120 किमी", "124 किमी", "126 किमी", "128 किमी"], answer: "126 किमी" },
+
+      { question: "प्रश्न 6: A:B = 7:9 और कुल 320 है। A का भाग = ?", options: ["126", "135", "140", "144"], answer: "140" },
+      { question: "प्रश्न 7: 30 लीटर मिश्रण (दूध:पानी = 5:1) को 3:1 करने हेतु कितना पानी और मिलाएँ?", options: ["2 L", "2.5 L", "3 L", "3.33 L"], answer: "3.33 L" },
+      { question: "प्रश्न 8: 18, 24 और 30 का LCM क्या है?", options: ["180", "240", "300", "360"], answer: "360" },
+      { question: "प्रश्न 9: 12, 18, 24, 30 और x का औसत 22 है। x = ?", options: ["24", "26", "28", "30"], answer: "26" },
+      { question: "प्रश्न 10: क्रमिक छूट 10% और 20% के समतुल्य एकल छूट?", options: ["27%", "28%", "29%", "30%"], answer: "28%" },
+
+      { question: "प्रश्न 11: पाइप A 4 घं में, B 6 घं में टंकी भरते हैं। दोनों मिलकर समय?", options: ["2 घंटा 12 मिनट", "2 घंटा 24 मिनट", "2 घंटा 30 मिनट", "3 घंटा"], answer: "2 घंटा 24 मिनट" },
+      { question: "प्रश्न 12: नाव की स्थिर जल गति 12 किमी/घं, धारा 3 किमी/घं है। 30 किमी अपस्ट्रीम समय?", options: ["2 घं 45 मिन", "3 घं", "3 घं 20 मिन", "3 घं 30 मिन"], answer: "3 घं 20 मिन" },
+      { question: "प्रश्न 13: 'STATISTICS' के अक्षरों की व्यवस्थाएँ कितनी हैं?", options: ["25200", "37800", "50400", "75600"], answer: "50400" },
+      { question: "प्रश्न 14: जिन मूलों का योग 9 और गुणनफल 20 हो, वह द्विघात समीकरण है:", options: ["x²−8x+20=0", "x²−9x+20=0", "x²−10x+9=0", "x²+9x−20=0"], answer: "x²−9x+20=0" },
+      { question: "प्रश्न 15: 8:30 पर घड़ी की दोनों सुइयों के बीच कोण?", options: ["60°", "65°", "70°", "75°"], answer: "75°" },
+
+      { question: "प्रश्न 16: समान दूरी हेतु औसत गति 60 किमी/घं और 90 किमी/घं के लिए?", options: ["66", "68", "70", "72"], answer: "72" },
+      { question: "прश्न 17: ₹8000 पर 12% वार्षिक दर से 2 वर्ष में CI–SI का अंतर?", options: ["₹80", "₹96", "₹100", "₹115.2"], answer: "₹115.2" },
+      { question: "प्रश्न 18: लगातार 25% और 20% वृद्धि का समेकित प्रभाव?", options: ["40% वृद्धि", "45% वृद्धि", "50% वृद्धि", "55% वृद्धि"], answer: "50% वृद्धि" },
+      { question: "प्रश्न 19: यदि sinθ = 5/13 हो, तो tanθ = ?", options: ["3/4", "4/5", "5/12", "12/5"], answer: "5/12" },
+      { question: "प्रश्न 20: त्रिज्या 7 सेमी, ऊँचाई 12 सेमी वाले शंकु का आयतन (π=22/7)?", options: ["560 सेमी³", "588 सेमी³", "616 सेमी³", "640 सेमी³"], answer: "616 सेमी³" },
+
+      { question: "प्रश्न 21: A, B, C क्रमशः 12, 18, 36 दिन में कार्य करते हैं। साथ मिलकर समय?", options: ["4 दिन", "5 दिन", "6 दिन", "7 दिन"], answer: "6 दिन" },
+      { question: "प्रश्न 22: 7385 में न्यूनतम कितना जोड़ा जाए कि वह 11 से विभाज्य हो?", options: ["2", "4", "5", "7"], answer: "7" },
+      { question: "प्रश्न 23: ₹5000 पर 3 वर्ष में साधारण ब्याज ₹1050 है। दर = ?", options: ["5%", "6%", "7%", "8%"], answer: "7%" },
+      { question: "प्रश्न 24: (320 का 75%) + (150 का 40%) = ?", options: ["280", "290", "300", "320"], answer: "300" },
+      { question: "प्रश्न 25: x² − 11x + 24 = 0 के मूल?", options: ["3 और 8", "4 और 6", "2 और 12", "1 और 24"], answer: "3 और 8" },
+
+      // ----- REASONING (26–40) -----
+      { question: "प्रश्न 26: एक व्यक्ति 5 किमी उत्तर, 12 किमी पूर्व, 9 किमी दक्षिण गया। प्रारंभ बिंदु से सीधी दूरी?", options: ["3√10 किमी", "4√10 किमी", "5√10 किमी", "6√10 किमी"], answer: "4√10 किमी" },
+      { question: "प्रश्न 27: A, B का पुत्र है; B, C की बहन है; C, D का पुत्र है। A, D का क्या लगा?", options: ["पुत्र", "पोता", "भांजा", "दामाद"], answer: "पोता" },
+      { question: "प्रश्न 28: श्रृंखला: 4, 9, 19, 39, 79, ?", options: ["119", "149", "159", "169"], answer: "159" },
+      { question: "प्रश्न 29: अक्षर श्रृंखला: A, D, H, M, S, ?", options: ["X", "Y", "Z", "AA"], answer: "Z" },
+      { question: "प्रश्न 30: यदि 'PATROL' के हर अक्षर को +1 शिफ्ट करें तो कोड होगा:", options: ["QBUTPM", "QBUSPM", "QBUSPN", "QBVTPM"], answer: "QBUSPM" },
+
+      { question: "प्रश्न 31: समानता—वर्ग : क्षेत्रफल :: वृत्त : ?", options: ["परिधि", "क्षेत्रफल", "व्यास", "त्रिज्या"], answer: "क्षेत्रफल" },
+      { question: "प्रश्न 32: विषम चुनें: 121, 169, 196, 225, 243", options: ["121", "169", "196", "243"], answer: "243" },
+      { question: "प्रश्न 33: 15 अगस्त 1947 को सप्ताह का कौन सा दिन था?", options: ["बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"], answer: "शुक्रवार" },
+      { question: "प्रश्न 34: 10:24 पर घड़ी की सुइयों के बीच कोण?", options: ["156°", "162°", "168°", "174°"], answer: "168°" },
+      { question: "प्रश्न 35: 75 छात्रों में A ऊपर से 23वाँ है। नीचे से रैंक?", options: ["51वाँ", "52वाँ", "53वाँ", "54वाँ"], answer: "53वाँ" },
+
+      { question: "प्रश्न 36: श्रृंखला: 1, 3, 9, 27, 81, ?", options: ["121", "162", "243", "324"], answer: "243" },
+      { question: "प्रश्न 37: एक व्यक्ति दक्षिण की ओर मुख किए है, बाएँ मुड़ता है, 5 किमी चलता है; फिर बाएँ मुड़ता है, 3 किमी; फिर दाएँ मुड़ता है। अंतिम दिशा?", options: ["उत्तर", "दक्षिण", "पूर्व", "पश्चिम"], answer: "पूर्व" },
+      { question: "प्रश्न 38: A1Z26 में 'CHSL' के अक्षरों के स्थानों का योग?", options: ["38", "40", "42", "44"], answer: "42" },
+      { question: "प्रश्न 39: समानता—देश : राजधानी :: जापान : ?", options: ["ओसाका", "क्योटो", "हिरोशिमा", "टोक्यो"], answer: "टोक्यो" },
+      { question: "प्रश्न 40: विषम चुनें: बुध (Mercury), शुक्र, पृथ्वी, प्लूटो", options: ["बुध", "शुक्र", "पृथ्वी", "प्लूटो"], answer: "प्लूटो" },
+
+      // ----- GK / SCIENCE / CA (41–50) -----
+      { question: "प्रश्न 41: भारतीय संविधान में अनुसूचियों की संख्या कितनी है?", options: ["10", "11", "12", "13"], answer: "12" },
+      { question: "प्रश्न 42: अनुच्छेद 21 किससे संबंधित है?", options: ["समानता का अधिकार", "अभिव्यक्ति की स्वतंत्रता", "जीवन और व्यक्तिगत स्वतंत्रता", "धर्म की स्वतंत्रता"], answer: "जीवन और व्यक्तिगत स्वतंत्रता" },
+      { question: "प्रश्न 43: योजना आयोग के स्थान पर NITI Aayog कब गठित हुआ?", options: ["2013", "2014", "2015", "2016"], answer: "2015" },
+      { question: "प्रश्न 44: लोकसभा की पहली महिला अध्यक्ष कौन थीं?", options: ["सुमित्रा महाजन", "मीरा कुमार", "सुषमा स्वराज", "सोनिया गांधी"], answer: "मीरा कुमार" },
+      { question: "प्रश्न 45: ISRO मुख्यालय कहाँ है?", options: ["हैदराबाद", "चेन्नै", "बेंगलुरु", "नई दिल्ली"], answer: "बेंगलुरु" },
+
+      { question: "प्रश्न 46: अम्लीय वर्षा के लिए मुख्य रूप से उत्तरदायी गैस?", options: ["कार्बन मोनोक्साइड", "सल्फर डाइऑक्साइड", "मीथेन", "ऑक्सीजन"], answer: "सल्फर डाइऑक्साइड" },
+      { question: "प्रश्न 47: मानव रक्त का सामान्य pH लगभग कितना होता है?", options: ["6.8", "7.0", "7.4", "7.8"], answer: "7.4" },
+      { question: "प्रश्न 48: भौतिकी में नोबेल पाने वाले प्रथम भारतीय?", options: ["सी.वी. रमन", "हरगोविंद खुराना", "सुबह-चंद्र बोस", "सी.एन.आर. राव"], answer: "सी.वी. रमन" },
+      { question: "प्रश्न 49: मानव शरीर की सबसे बड़ी ग्रंथि?", options: ["अग्न्याशय", "यकृत", "अधिवृक्क", "अंडाशय/वृषण"], answer: "यकृत" },
+      { question: "прश्न 50: 2024 ओलंपिक खेल कहाँ आयोजित हुए?", options: ["टोक्यो", "पेरिस", "लॉस एंजिलिस", "ब्रिस्बेन"], answer: "पेरिस" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(\`input[name="q\${current}"]:checked\`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += \`<h3>कुल स्कोर: \${score} / \${questions.length}</h3>\`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
