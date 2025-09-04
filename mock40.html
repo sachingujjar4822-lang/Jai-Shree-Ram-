@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 40 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f7; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 12px #bbb; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #ecf0f1; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    .next { background: #2980b9; color: #fff; }
+    .back { background: #7f8c8d; color: #fff; }
+    .submit { background: #27ae60; color: #fff; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: #e74c3c; }
+    .result { margin-top: 20px; padding: 15px; background: #f8f9f9; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 40</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total)
+    const questions = [
+      // ===== Static GK + Current Affairs (20) =====
+      { question: "प्रश्न 1: 'विश्व पर्यावरण दिवस' कब मनाया जाता है?", options: ["5 जून", "22 अप्रैल", "14 नवंबर", "1 मई"], answer: "5 जून" },
+      { question: "प्रश्न 2: भारतीय रिजर्व बैंक की स्थापना कब हुई?", options: ["1935", "1947", "1950", "1920"], answer: "1935" },
+      { question: "प्रश्न 3: 'नेहरू रिपोर्ट' किस वर्ष आई थी?", options: ["1928", "1930", "1925", "1922"], answer: "1928" },
+      { question: "प्रश्न 4: 'माउंट एवेरेस्ट' पर चढ़ने वाली पहली भारतीय महिला?", options: ["बachendri Pal", "संतोष यादव", "प्रीति शेनॉय", "सुषमा शर्मा"], answer: "बachendri Pal" },
+      { question: "प्रश्न 5: भारत का राष्ट्रीय पशु कौन है?", options: ["शेर", "हाथी", "बाघ", "गाय"], answer: "बाघ" },
+      { question: "प्रश्न 6: 'भारत छोड़ो आंदोलन' किस वर्ष हुआ?", options: ["1940", "1942", "1946", "1935"], answer: "1942" },
+      { question: "प्रश्न 7: 'विश्व व्यापार संगठन (WTO)' का मुख्यालय कहाँ है?", options: ["वॉशिंगटन", "जेनेवा", "न्यूयॉर्क", "पेरिस"], answer: "जेनेवा" },
+      { question: "प्रश्न 8: 'भारत रत्न' पाने वाली पहली महिला?", options: ["इंदिरा गांधी", "सरोजिनी नायडू", "मदर टेरेसा", "एम. एस. सुब्बुलक्ष्मी"], answer: "इंदिरा गांधी" },
+      { question: "प्रश्न 9: 'चिपको आंदोलन' किस राज्य में शुरू हुआ था?", options: ["उत्तराखंड", "हिमाचल प्रदेश", "बिहार", "झारखंड"], answer: "उत्तराखंड" },
+      { question: "प्रश्न 10: 'रेल बजट' किस वर्ष आम बजट में मिला दिया गया?", options: ["2015", "2017", "2019", "2020"], answer: "2017" },
+      { question: "प्रश्न 11: 'इंडियन स्पेस रिसर्च ऑर्गेनाइजेशन (ISRO)' की स्थापना कब हुई?", options: ["1962", "1969", "1972", "1980"], answer: "1969" },
+      { question: "प्रश्न 12: 'गोल्डन क्वाड्रिलैटरल' किससे संबंधित है?", options: ["रेलवे", "हवाई मार्ग", "सड़क मार्ग", "जलमार्ग"], answer: "सड़क मार्ग" },
+      { question: "प्रश्न 13: 'राष्ट्रीय ध्वज' के मध्य में बने चक्र में कितनी तीलियाँ होती हैं?", options: ["20", "22", "24", "26"], answer: "24" },
+      { question: "प्रश्न 14: 'ओलंपिक 2024' किस शहर में होंगे?", options: ["टोक्यो", "पेरिस", "लंदन", "रोम"], answer: "पेरिस" },
+      { question: "प्रश्न 15: 'विश्व बैंक' का मुख्यालय कहाँ है?", options: ["वॉशिंगटन DC", "न्यूयॉर्क", "जेनेवा", "लंदन"], answer: "वॉशिंगटन DC" },
+      { question: "प्रश्न 16: 'अलीगढ़ आंदोलन' किसने शुरू किया?", options: ["राजा राममोहन राय", "सर सैयद अहमद खान", "महात्मा गांधी", "बाल गंगाधर तिलक"], answer: "सर सैयद अहमद खान" },
+      { question: "प्रश्न 17: 'भारत का मिसाइल मैन' किसे कहा जाता है?", options: ["डॉ. विक्रम साराभाई", "डॉ. ए.पी.जे. अब्दुल कलाम", "डॉ. होमी भाभा", "डॉ. सतीश धवन"], answer: "डॉ. ए.पी.जे. अब्दुल कलाम" },
+      { question: "प्रश्न 18: 'कुंभ मेला' का आयोजन कितने वर्षों बाद होता है?", options: ["8 वर्ष", "10 वर्ष", "12 वर्ष", "15 वर्ष"], answer: "12 वर्ष" },
+      { question: "प्रश्न 19: 'गंगा नदी' का उद्गम स्थल कहाँ है?", options: ["गंगोत्री", "यमुनोत्री", "बद्रीनाथ", "केदारनाथ"], answer: "गंगोत्री" },
+      { question: "प्रश्न 20: 'राष्ट्रीय खेल' के रूप में हॉकी कब घोषित किया गया?", options: ["1925", "1936", "1947", "कभी नहीं"], answer: "कभी नहीं" },
+
+      // ===== Maths + Reasoning (6) =====
+      { question: "प्रश्न 21: यदि किसी संख्या का 25% = 45 है, तो संख्या क्या है?", options: ["160", "170", "180", "190"], answer: "180" },
+      { question: "प्रश्न 22: एक ट्रेन 72 किमी/घं की गति से 5 सेकंड में खंभा पार करती है। ट्रेन की लंबाई?", options: ["90 मी", "100 मी", "110 मी", "120 मी"], answer: "100 मी" },
+      { question: "प्रश्न 23: एक आदमी किसी वस्तु को 20% हानि पर बेचता है। यदि वह उसे ₹240 अधिक में बेचता, तो 10% लाभ होता। वस्तु का क्रय मूल्य?", options: ["₹600", "₹720", "₹800", "₹900"], answer: "₹800" },
+      { question: "प्रश्न 24: श्रृंखला पूरी करें: 2, 6, 12, 20, 30, ?", options: ["40", "42", "44", "46"], answer: "42" },
+      { question: "प्रश्न 25: A अकेले 12 दिन में कार्य करता है और B अकेले 15 दिन में। दोनों मिलकर कार्य कितने दिन में पूरा करेंगे?", options: ["6 दिन", "6.4 दिन", "6.67 दिन", "7 दिन"], answer: "6.67 दिन" },
+      { question: "प्रश्न 26: यदि किसी भिन्न का अंश 25% बढ़ाया जाए और हर 20% घटाया जाए तो नया मान 5/4 है। भिन्न क्या है?", options: ["2/3", "3/5", "4/5", "5/6"], answer: "2/3" },
+
+      // ===== English (10) =====
+      { question: "Q27: Synonym of 'Obsolete'.", options: ["Modern", "Outdated", "New", "Fresh"], answer: "Outdated" },
+      { question: "Q28: Antonym of 'Generous'.", options: ["Kind", "Cruel", "Stingy", "Greedy"], answer: "Stingy" },
+      { question: "Q29: Correct spelling:", options: ["Definately", "Definitely", "Defanitely", "Definetely"], answer: "Definitely" },
+      { question: "Q30: One word: 'A person who speaks many languages.'", options: ["Philatelist", "Polyglot", "Monarch", "Nomad"], answer: "Polyglot" },
+      { question: "Q31: Fill in the blank: He is good ____ mathematics.", options: ["in", "at", "on", "with"], answer: "at" },
+      { question: "Q32: Passive voice: 'The teacher will explain the lesson.'", options: ["The lesson will explained.", "The lesson will be explained by the teacher.", "The lesson explained.", "The lesson was explained."], answer: "The lesson will be explained by the teacher." },
+      { question: "Q33: Idiom: 'Hit the sack' means —", options: ["Go to bed", "Fight", "Work hard", "Celebrate"], answer: "Go to bed" },
+      { question: "Q34: Choose the correct tense: I ____ here since 2010.", options: ["am living", "was living", "have been living", "lived"], answer: "have been living" },
+      { question: "Q35: Error Spotting: 'She don’t like mangoes.'", options: ["She", "don’t", "like mangoes", "No error"], answer: "don’t" },
+      { question: "Q36: Antonym of 'Victory'.", options: ["Win", "Loss", "Success", "Profit"], answer: "Loss" },
+
+      // ===== Hindi (14) =====
+      { question: "प्रश्न 37: 'गोदान' उपन्यास किसके द्वारा लिखा गया?", options: ["मुंशी प्रेमचंद", "रामविलास शर्मा", "हरिवंश राय बच्चन", "महादेवी वर्मा"], answer: "मुंशी प्रेमचंद" },
+      { question: "प्रश्न 38: 'भारत का शेक्सपियर' किसे कहा जाता है?", options: ["कालीदास", "जयशंकर प्रसाद", "भवभूति", "भवानी प्रसाद मिश्र"], answer: "कालीदास" },
+      { question: "प्रश्न 39: 'पंचवटी' महाकाव्य के रचयिता कौन हैं?", options: ["सुभद्राकुमारी चौहान", "मैथिलीशरण गुप्त", "जयशंकर प्रसाद", "हरिवंश राय बच्चन"], answer: "मैथिलीशरण गुप्त" },
+      { question: "प्रश्न 40: 'रामचरितमानस' किस भाषा में लिखी गई है?", options: ["संस्कृत", "अवधी", "ब्रजभाषा", "खड़ी बोली"], answer: "अवधी" },
+      { question: "प्रश्न 41: 'दुष्यंत कुमार' किस विधा से जुड़े हैं?", options: ["कहानी", "उपन्यास", "नाटक", "ग़ज़ल"], answer: "ग़ज़ल" },
+      { question: "प्रश्न 42: 'निराला' का वास्तविक नाम क्या था?", options: ["सूर्यकांत त्रिपाठी", "हरिवंश राय", "गोपालदास", "शिवपूजन सहाय"], answer: "सूर्यकांत त्रिपाठी" },
+      { question: "प्रश्न 43: 'जयशंकर प्रसाद' की कृति कौन-सी है?", options: ["कामायनी", "साकेत", "आँसू", "रामायण"], answer: "कामायनी" },
+      { question: "प्रश्न 44: 'लाल किला' का निर्माण किसने कराया?", options: ["अकबर", "जहांगीर", "शाहजहां", "औरंगजेब"], answer: "शाहजहां" },
+      { question: "प्रश्न 45: 'संगीत रत्नाकर' किसने लिखा?", options: ["तुलसीदास", "सरंगदेव", "कालीदास", "भवभूति"], answer: "सरंगदेव" },
+      { question: "प्रश्न 46: 'गाँधीजी' ने 'हिन्द स्वराज' किस भाषा में लिखा?", options: ["अंग्रेजी", "गुजराती", "हिंदी", "संस्कृत"], answer: "गुजराती" },
+      { question: "प्रश्न 47: 'भवानी प्रसाद मिश्र' किस आंदोलन से जुड़े थे?", options: ["असहयोग", "भारत छोड़ो", "सविनय अवज्ञा", "नमक सत्याग्रह"], answer: "भारत छोड़ो" },
+      { question: "प्रश्न 48: 'महादेवी वर्मा' को किस उपाधि से जाना जाता है?", options: ["आधुनिक मीरा", "साहित्य सम्राट", "छायावाद की जननी", "गीतांजलि कवयित्री"], answer: "आधुनिक मीरा" },
+      { question: "प्रश्न 49: 'ताजमहल' किस वास्तु शैली का उदाहरण है?", options: ["द्रविड़", "नागर", "इंडो-इस्लामिक", "यूरोपीय"], answer: "इंडो-इस्लामिक" },
+      { question: "प्रश्न 50: 'सुभद्राकुमारी चौहान' की प्रसिद्ध कविता?", options: ["झाँसी की रानी", "पुष्प की अभिलाषा", "गीतांजलि", "मधुशाला"], answer: "झाँसी की रानी" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
