@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 41 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f7; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 12px #bbb; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #ecf0f1; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    .next { background: #2980b9; color: #fff; }
+    .back { background: #7f8c8d; color: #fff; }
+    .submit { background: #27ae60; color: #fff; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: #e74c3c; }
+    .result { margin-top: 20px; padding: 15px; background: #f8f9f9; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 41</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total)
+    const questions = [
+      // ===== Science (18) =====
+      { question: "प्रश्न 1: मानव शरीर की सबसे छोटी हड्डी कौन सी है?", options: ["स्टेप्स", "फीमर", "रेडियस", "टिबिया"], answer: "स्टेप्स" },
+      { question: "प्रश्न 2: DNA की संरचना की खोज किसने की थी?", options: ["वॉटसन और क्रिक", "न्यूटन", "आइंस्टीन", "डार्विन"], answer: "वॉटसन और क्रिक" },
+      { question: "प्रश्न 3: पेनिसिलिन की खोज किसने की?", options: ["अलेक्ज़ेंडर फ्लेमिंग", "रॉबर्ट कोच", "लुई पाश्चर", "जेम्स वाट"], answer: "अलेक्ज़ेंडर फ्लेमिंग" },
+      { question: "प्रश्न 4: बल्ब का फिलामेंट किस धातु का बना होता है?", options: ["लोहे", "टंगस्टन", "एल्युमिनियम", "तांबे"], answer: "टंगस्टन" },
+      { question: "प्रश्न 5: लाल रक्त कणिकाओं (RBC) का औसत जीवनकाल कितना होता है?", options: ["60 दिन", "90 दिन", "120 दिन", "150 दिन"], answer: "120 दिन" },
+      { question: "प्रश्न 6: पृथ्वी के वायुमंडल में सबसे अधिक गैस कौन सी है?", options: ["ऑक्सीजन", "कार्बन डाइऑक्साइड", "नाइट्रोजन", "हाइड्रोजन"], answer: "नाइट्रोजन" },
+      { question: "प्रश्न 7: ध्वनि की गति किस माध्यम में सबसे अधिक होती है?", options: ["वायु", "जल", "लोहा", "लकड़ी"], answer: "लोहा" },
+      { question: "प्रश्न 8: विद्युत धारा की SI इकाई क्या है?", options: ["ओम", "कूलॉम", "एम्पीयर", "वोल्ट"], answer: "एम्पीयर" },
+      { question: "प्रश्न 9: विटामिन D की कमी से कौन सी बीमारी होती है?", options: ["रातांधता", "बेरीबेरी", "रिकेट्स", "स्कर्वी"], answer: "रिकेट्स" },
+      { question: "प्रश्न 10: हृदय का सामान्य धड़कन दर कितनी होती है?", options: ["60-80 प्रति मिनट", "100-120 प्रति मिनट", "30-40 प्रति मिनट", "150 प्रति मिनट"], answer: "60-80 प्रति मिनट" },
+      { question: "प्रश्न 11: पृथ्वी की सबसे ऊपरी परत को क्या कहते हैं?", options: ["मेंटल", "कोर", "क्रस्ट", "लिथोस्फीयर"], answer: "क्रस्ट" },
+      { question: "प्रश्न 12: पौधे अपना भोजन किस प्रक्रिया से बनाते हैं?", options: ["श्वसन", "प्रकाश संश्लेषण", "पाचन", "वाष्पोत्सर्जन"], answer: "प्रकाश संश्लेषण" },
+      { question: "प्रश्न 13: सबसे हल्की धातु कौन सी है?", options: ["लिथियम", "सोडियम", "एल्युमिनियम", "कैल्शियम"], answer: "लिथियम" },
+      { question: "प्रश्न 14: पानी का pH मान कितना होता है?", options: ["5", "6", "7", "8"], answer: "7" },
+      { question: "प्रश्न 15: किस ग्रह को 'लाल ग्रह' कहा जाता है?", options: ["शुक्र", "मंगल", "बृहस्पति", "शनि"], answer: "मंगल" },
+      { question: "प्रश्न 16: सूर्य का मुख्य तत्व कौन सा है?", options: ["ऑक्सीजन", "हाइड्रोजन", "हीलियम", "नाइट्रोजन"], answer: "हाइड्रोजन" },
+      { question: "प्रश्न 17: मानव शरीर का सबसे बड़ा अंग कौन सा है?", options: ["यकृत", "हृदय", "त्वचा", "फेफड़ा"], answer: "त्वचा" },
+      { question: "प्रश्न 18: कौन सा विटामिन 'एस्कॉर्बिक एसिड' कहलाता है?", options: ["विटामिन A", "विटामिन B", "विटामिन C", "विटामिन D"], answer: "विटामिन C" },
+
+      // ===== GK + Current Affairs (12) =====
+      { question: "प्रश्न 19: भारत का संविधान कब लागू हुआ?", options: ["26 जनवरी 1950", "15 अगस्त 1947", "26 नवंबर 1949", "2 अक्टूबर 1950"], answer: "26 जनवरी 1950" },
+      { question: "प्रश्न 20: 'जय जवान जय किसान' का नारा किसने दिया?", options: ["महात्मा गांधी", "लाल बहादुर शास्त्री", "नेहरू", "सुभाष बोस"], answer: "लाल बहादुर शास्त्री" },
+      { question: "प्रश्न 21: 'आत्मनिर्भर भारत अभियान' किस वर्ष शुरू हुआ?", options: ["2018", "2019", "2020", "2021"], answer: "2020" },
+      { question: "प्रश्न 22: UNO की स्थापना कब हुई?", options: ["1939", "1942", "1945", "1950"], answer: "1945" },
+      { question: "प्रश्न 23: भारतीय राष्ट्रीय कांग्रेस की स्थापना कब हुई?", options: ["1880", "1885", "1890", "1905"], answer: "1885" },
+      { question: "प्रश्न 24: G20 शिखर सम्मेलन 2023 कहाँ आयोजित हुआ?", options: ["दिल्ली", "मुंबई", "जयपुर", "बेंगलुरु"], answer: "दिल्ली" },
+      { question: "प्रश्न 25: 'मेक इन इंडिया' कार्यक्रम कब शुरू किया गया?", options: ["2012", "2014", "2016", "2018"], answer: "2014" },
+      { question: "प्रश्न 26: भारत की सबसे लंबी नदी कौन सी है?", options: ["गंगा", "ब्रह्मपुत्र", "यमुना", "गोदावरी"], answer: "गंगा" },
+      { question: "प्रश्न 27: 'भारतीय संविधान' को बनाने वाली सभा के अध्यक्ष कौन थे?", options: ["डॉ. अम्बेडकर", "राजेंद्र प्रसाद", "जवाहरलाल नेहरू", "सुभाष बोस"], answer: "राजेंद्र प्रसाद" },
+      { question: "प्रश्न 28: भारत का राष्ट्रीय खेल क्या है?", options: ["क्रिकेट", "हॉकी", "कबड्डी", "फुटबॉल"], answer: "हॉकी" },
+      { question: "प्रश्न 29: 'स्टैच्यू ऑफ यूनिटी' किस राज्य में है?", options: ["गुजरात", "मध्य प्रदेश", "राजस्थान", "उत्तर प्रदेश"], answer: "गुजरात" },
+      { question: "प्रश्न 30: भारत के प्रथम प्रधानमंत्री कौन थे?", options: ["लाल बहादुर शास्त्री", "जवाहरलाल नेहरू", "इंदिरा गांधी", "राजेंद्र प्रसाद"], answer: "जवाहरलाल नेहरू" },
+
+      // ===== Maths + Reasoning (8) =====
+      { question: "प्रश्न 31: 144 का वर्गमूल कितना है?", options: ["10", "11", "12", "13"], answer: "12" },
+      { question: "प्रश्न 32: यदि किसी वस्तु का क्रय मूल्य 500 है और लाभ 20% है, तो विक्रय मूल्य कितना होगा?", options: ["550", "600", "650", "700"], answer: "600" },
+      { question: "प्रश्न 33: श्रृंखला पूरी करें: 3, 9, 27, 81, ?", options: ["162", "243", "324", "729"], answer: "243" },
+      { question: "प्रश्न 34: यदि 12 मजदूर 10 दिन में काम करते हैं, तो 15 मजदूर कितने दिन में वही काम करेंगे?", options: ["6 दिन", "7 दिन", "8 दिन", "9 दिन"], answer: "8 दिन" },
+      { question: "प्रश्न 35: यदि A की आयु 24 वर्ष है और B की आयु 20 वर्ष है, तो उनकी औसत आयु कितनी है?", options: ["20", "21", "22", "23"], answer: "22" },
+      { question: "प्रश्न 36: यदि किसी संख्या का 40% = 120 है, तो संख्या क्या है?", options: ["200", "250", "280", "300"], answer: "300" },
+      { question: "प्रश्न 37: यदि एक वस्तु को 15% हानि पर बेचा जाए और उसका विक्रय मूल्य 170 हो, तो क्रय मूल्य कितना होगा?", options: ["180", "190", "200", "210"], answer: "200" },
+      { question: "प्रश्न 38: घड़ी की सुईयाँ 3 बजे कितने डिग्री का कोण बनाती हैं?", options: ["60°", "90°", "120°", "150°"], answer: "90°" },
+
+      // ===== English (6) =====
+      { question: "Q39: Synonym of 'Rapid'.", options: ["Slow", "Fast", "Calm", "Silent"], answer: "Fast" },
+      { question: "Q40: Antonym of 'Bright'.", options: ["Shiny", "Dark", "Clear", "Fair"], answer: "Dark" },
+      { question: "Q41: Correct spelling:", options: ["Acommodate", "Accomodate", "Accmmodate", "Accommodate"], answer: "Accommodate" },
+      { question: "Q42: Fill in the blank: He is interested ____ sports.", options: ["in", "on", "with", "to"], answer: "in" },
+      { question: "Q43: One word: 'A place where books are kept.'", options: ["Hospital", "Library", "Museum", "School"], answer: "Library" },
+      { question: "Q44: Antonym of 'Success'.", options: ["Loss", "Failure", "Profit", "Win"], answer: "Failure" },
+
+      // ===== Hindi (6) =====
+      { question: "प्रश्न 45: 'गीतांजलि' किसकी रचना है?", options: ["महादेवी वर्मा", "रामधारी सिंह दिनकर", "रवींद्रनाथ टैगोर", "जयशंकर प्रसाद"], answer: "रवींद्रनाथ टैगोर" },
+      { question: "प्रश्न 46: 'रामचरितमानस' किस भाषा में लिखा गया?", options: ["संस्कृत", "अवधी", "ब्रज", "पाली"], answer: "अवधी" },
+      { question: "प्रश्न 47: 'पुष्प की अभिलाषा' कविता किस कवि की है?", options: ["सुभद्राकुमारी चौहान", "सोहनलाल द्विवेदी", "रामधारी सिंह दिनकर", "जयशंकर प्रसाद"], answer: "सोहनलाल द्विवेदी" },
+      { question: "प्रश्न 48: 'कामायनी' महाकाव्य किसने लिखा?", options: ["रामधारी सिंह दिनकर", "जयशंकर प्रसाद", "माखनलाल चतुर्वेदी", "जयशंकर त्रिपाठी"], answer: "जयशंकर प्रसाद" },
+      { question: "प्रश्न 49: 'झाँसी की रानी' कविता किसकी है?", options: ["महादेवी वर्मा", "सुभद्राकुमारी चौहान", "जयशंकर प्रसाद", "रामधारी सिंह दिनकर"], answer: "सुभद्राकुमारी चौहान" },
+      { question: "प्रश्न 50: 'मधुशाला' किस कवि की रचना है?", options: ["सुमित्रानंदन पंत", "रामधारी सिंह दिनकर", "हरिवंश राय बच्चन", "मैथिलीशरण गुप्त"], answer: "हरिवंश राय बच्चन" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
