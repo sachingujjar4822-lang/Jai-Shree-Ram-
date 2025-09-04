@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 4 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #ccc; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-weight: bold; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 18px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 4</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      } else {
+        submitQuiz();
+      }
+    }, 1000);
+
+    // 50 Questions for Mock Test 4
+    const questions = [
+      { question: "प्रश्न 1: 'चिपको आंदोलन' किससे संबंधित था?", options: ["वन संरक्षण", "जल प्रदूषण", "खाद्य सुरक्षा", "नदी बांध"], answer: "वन संरक्षण" },
+      { question: "प्रश्न 2: 'रामकृष्ण मिशन' की स्थापना किसने की?", options: ["स्वामी विवेकानंद", "राजा राममोहन राय", "डेबेंद्रनाथ टैगोर", "महात्मा गांधी"], answer: "स्वामी विवेकानंद" },
+      { question: "प्रश्न 3: 'सौरमंडल का सबसे बड़ा ग्रह' कौन सा है?", options: ["बृहस्पति", "शनि", "पृथ्वी", "नेपच्यून"], answer: "बृहस्पति" },
+      { question: "प्रश्न 4: 'विश्व पर्यावरण दिवस' कब मनाया जाता है?", options: ["5 जून", "22 अप्रैल", "14 नवम्बर", "1 मई"], answer: "5 जून" },
+      { question: "प्रश्न 5: 'नोबेल पुरस्कार' किस देश में शुरू हुआ?", options: ["स्वीडन", "नॉर्वे", "अमेरिका", "फ्रांस"], answer: "स्वीडन" },
+      { question: "प्रश्न 6: 'पंचायती राज' किस वर्ष शुरू हुआ?", options: ["1992", "1952", "1972", "1985"], answer: "1992" },
+      { question: "प्रश्न 7: 'दादा साहेब फाल्के पुरस्कार' किस क्षेत्र में दिया जाता है?", options: ["सिनेमा", "साहित्य", "विज्ञान", "खेल"], answer: "सिनेमा" },
+      { question: "प्रश्न 8: 'भारतीय नौसेना दिवस' कब मनाया जाता है?", options: ["4 दिसम्बर", "15 जनवरी", "26 जनवरी", "8 अक्टूबर"], answer: "4 दिसम्बर" },
+      { question: "प्रश्न 9: 'विश्व का सबसे बड़ा रेगिस्तान' कौन सा है?", options: ["सहारा", "गोबी", "थार", "कालाहारी"], answer: "सहारा" },
+      { question: "प्रश्न 10: 'भारत का राष्ट्रीय गीत' कौन सा है?", options: ["वंदे मातरम्", "जन गण मन", "सारे जहाँ से अच्छा", "जय हिंद"], answer: "वंदे मातरम्" },
+      { question: "प्रश्न 11: 'अशोक चक्र' का रंग क्या है?", options: ["नीला", "हरा", "लाल", "पीला"], answer: "नीला" },
+      { question: "प्रश्न 12: 'भारतीय संसद' में कितने सदन हैं?", options: ["2", "1", "3", "4"], answer: "2" },
+      { question: "प्रश्न 13: 'हरित क्रांति' किससे संबंधित है?", options: ["कृषि उत्पादन", "औद्योगिक विकास", "जल संरक्षण", "स्वास्थ्य"], answer: "कृषि उत्पादन" },
+      { question: "प्रश्न 14: 'तिरुपति मंदिर' किस राज्य में है?", options: ["आंध्र प्रदेश", "तमिलनाडु", "केरल", "कर्नाटक"], answer: "आंध्र प्रदेश" },
+      { question: "प्रश्न 15: 'फ्रांस की राजधानी' क्या है?", options: ["पेरिस", "लंदन", "बर्लिन", "रोम"], answer: "पेरिस" },
+      { question: "प्रश्न 16: 'रेलवे बोर्ड' की स्थापना कब हुई?", options: ["1905", "1920", "1942", "1951"], answer: "1905" },
+      { question: "प्रश्न 17: 'ओलंपिक खेल' कितने वर्ष बाद आयोजित होते हैं?", options: ["4 वर्ष", "2 वर्ष", "5 वर्ष", "3 वर्ष"], answer: "4 वर्ष" },
+      { question: "प्रश्न 18: 'भारतीय संविधान' को कब अपनाया गया?", options: ["26 जनवरी 1950", "15 अगस्त 1947", "26 नवम्बर 1949", "2 अक्टूबर 1947"], answer: "26 नवम्बर 1949" },
+      { question: "प्रश्न 19: 'भारत रत्न' की शुरुआत कब हुई?", options: ["1954", "1960", "1947", "1972"], answer: "1954" },
+      { question: "प्रश्न 20: 'अमृतसर' किसलिए प्रसिद्ध है?", options: ["स्वर्ण मंदिर", "लाल किला", "ताजमहल", "सांची स्तूप"], answer: "स्वर्ण मंदिर" },
+      { question: "प्रश्न 21: 'विश्व का सबसे ऊँचा जलप्रपात' कौन सा है?", options: ["एंजल फॉल्स", "नियाग्रा", "विक्टोरिया", "जोग फॉल्स"], answer: "एंजल फॉल्स" },
+      { question: "प्रश्न 22: 'भारत का पहला कंप्यूटर' कहाँ स्थापित हुआ?", options: ["कोलकाता", "दिल्ली", "मुंबई", "बेंगलुरु"], answer: "कोलकाता" },
+      { question: "प्रश्न 23: 'काजीरंगा राष्ट्रीय उद्यान' कहाँ है?", options: ["असम", "मध्य प्रदेश", "राजस्थान", "गुजरात"], answer: "असम" },
+      { question: "प्रश्न 24: 'महात्मा गांधी' का जन्म कब हुआ?", options: ["1869", "1872", "1885", "1890"], answer: "1869" },
+      { question: "प्रश्न 25: 'अखिल भारतीय कांग्रेस' की स्थापना कब हुई?", options: ["1885", "1905", "1919", "1942"], answer: "1885" },
+      { question: "प्रश्न 26: 'भारत की सबसे बड़ी झील' कौन सी है?", options: ["चिल्का झील", "वेम्बनाड झील", "सांभर झील", "पांगोंग झील"], answer: "वेम्बनाड झील" },
+      { question: "प्रश्न 27: 'विश्व का सबसे बड़ा देश' कौन सा है?", options: ["रूस", "कनाडा", "चीन", "अमेरिका"], answer: "रूस" },
+      { question: "प्रश्न 28: 'संयुक्त राष्ट्र संघ' की स्थापना कब हुई?", options: ["1945", "1950", "1930", "1920"], answer: "1945" },
+      { question: "प्रश्न 29: 'ताशकंद समझौता' किस वर्ष हुआ?", options: ["1966", "1971", "1962", "1954"], answer: "1966" },
+      { question: "प्रश्न 30: 'भारत का राष्ट्रीय फूल' कौन सा है?", options: ["कमल", "गुलाब", "चमेली", "सूरजमुखी"], answer: "कमल" },
+      { question: "प्रश्न 31: 'पृथ्वी का उपग्रह' कौन सा है?", options: ["चंद्रमा", "मंगल", "बुध", "शुक्र"], answer: "चंद्रमा" },
+      { question: "प्रश्न 32: 'रामायण' का हिंदी अनुवाद किसने किया?", options: ["तुलसीदास", "कालिदास", "चाणक्य", "जयदेव"], answer: "तुलसीदास" },
+      { question: "प्रश्न 33: 'भारत का सबसे बड़ा राज्य' क्षेत्रफल के आधार पर कौन सा है?", options: ["राजस्थान", "मध्य प्रदेश", "उत्तर प्रदेश", "महाराष्ट्र"], answer: "राजस्थान" },
+      { question: "प्रश्न 34: 'भारतीय थल सेना दिवस' कब होता है?", options: ["15 जनवरी", "4 दिसम्बर", "8 अक्टूबर", "26 जनवरी"], answer: "15 जनवरी" },
+      { question: "प्रश्न 35: 'विश्व का सबसे ऊँचा पर्वत' कौन सा है?", options: ["माउंट एवरेस्ट", "कंचनजंगा", "K2", "धौलागिरी"], answer: "माउंट एवरेस्ट" },
+      { question: "प्रश्न 36: 'भारत का पहला उपग्रह प्रक्षेपण केंद्र' कहाँ है?", options: ["श्रीहरिकोटा", "तिरुवनंतपुरम", "बेंगलुरु", "मुंबई"], answer: "श्रीहरिकोटा" },
+      { question: "प्रश्न 37: 'अंतर्राष्ट्रीय योग दिवस' कब मनाया जाता है?", options: ["21 जून", "5 जून", "10 दिसम्बर", "14 नवम्बर"], answer: "21 जून" },
+      { question: "प्रश्न 38: 'भारत का सबसे बड़ा बंदरगाह' कौन सा है?", options: ["मुंबई", "कोलकाता", "चेन्नई", "कांडला"], answer: "मुंबई" },
+      { question: "प्रश्न 39: 'कांग्रेस का विभाजन' किस वर्ष हुआ?", options: ["1907", "1919", "1942", "1930"], answer: "1907" },
+      { question: "प्रश्न 40: 'भारतीय अंतरिक्ष अनुसंधान संगठन' की स्थापना कब हुई?", options: ["1969", "1972", "1980", "1965"], answer: "1969" },
+      { question: "प्रश्न 41: 'अशोक स्तंभ' कहाँ स्थित है?", options: ["सारनाथ", "कुशीनगर", "बोधगया", "लुंबिनी"], answer: "सारनाथ" },
+      { question: "प्रश्न 42: 'फुटबॉल का जन्म किस देश में हुआ?", options: ["इंग्लैंड", "अमेरिका", "ब्राज़ील", "फ्रांस"], answer: "इंग्लैंड" },
+      { question: "प्रश्न 43: 'भारत का राष्ट्रीय पशु' कौन सा है?", options: ["बाघ", "हाथी", "सिंह", "हिरण"], answer: "बाघ" },
+      { question: "प्रश्न 44: 'नर्मदा नदी' कहाँ गिरती है?", options: ["अरब सागर", "बंगाल की खाड़ी", "हिंद महासागर", "लक्षद्वीप"], answer: "अरब सागर" },
+      { question: "प्रश्न 45: 'दक्षिण भारत का मैनचेस्टर' किसे कहा जाता है?", options: ["कोयंबटूर", "चेन्नई", "हैदराबाद", "मैसूर"], answer: "कोयंबटूर" },
+      { question: "प्रश्न 46: 'अंतरिक्ष में जाने वाली पहली भारतीय महिला कौन थीं?", options: ["कल्पना चावला", "सुनिता विलियम्स", "टेस्सी थॉमस", "प्रतिभा पाटिल"], answer: "कल्पना चावला" },
+      { question: "प्रश्न 47: 'बुलंद दरवाजा' कहाँ स्थित है?", options: ["फतेहपुर सीकरी", "आगरा", "दिल्ली", "जयपुर"], answer: "फतेहपुर सीकरी" },
+      { question: "प्रश्न 48: 'भारत का राष्ट्रीय खेल' कौन सा है?", options: ["हॉकी", "क्रिकेट", "कबड्डी", "फुटबॉल"], answer: "हॉकी" },
+      { question: "प्रश्न 49: 'भारत की पहली महिला प्रधानमंत्री' कौन थीं?", options: ["इंदिरा गांधी", "प्रतिभा पाटिल", "सरोजिनी नायडू", "सुषमा स्वराज"], answer: "इंदिरा गांधी" },
+      { question: "प्रश्न 50: 'गांधीजी का पहला सत्याग्रह' कहाँ हुआ?", options: ["चंपारण", "खेड़ा", "बारडोली", "अहमदाबाद"], answer: "चंपारण" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
