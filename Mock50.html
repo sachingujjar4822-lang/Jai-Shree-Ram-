@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agniveer GD Mock Test 50</title>
+  <style>
+    body {font-family: Arial, sans-serif; margin:20px; background:#f8f9fa;}
+    .container {max-width:800px; margin:auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+    h1 {text-align:center; color:#333;}
+    .question {margin-bottom:20px;}
+    .options label {display:block; margin-bottom:8px; cursor:pointer;}
+    button {padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#007bff; color:#fff; cursor:pointer;}
+    button:hover {background:#0056b3;}
+    #result {font-weight:bold; margin-top:20px;}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Agniveer GD Mock Test 50</h1>
+  <div id="quiz"></div>
+  <button onclick="prevQuestion()">⬅ पिछला</button>
+  <button onclick="nextQuestion()">अगला ➡</button>
+  <button onclick="submitQuiz()">सबमिट करें</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const quizData = [
+  // ==== Science (18) ====
+  {q:"मनुष्य के शरीर में सबसे बड़ा अंग कौन सा है?", options:["हृदय","त्वचा","यकृत","फेफड़े"], answer:"त्वचा"},
+  {q:"डीएनए की संरचना किसने खोजी थी?", options:["वॉटसन और क्रिक","न्यूटन","डार्विन","पास्चर"], answer:"वॉटसन और क्रिक"},
+  {q:"सूर्य में कौन-सी प्रक्रिया से ऊर्जा उत्पन्न होती है?", options:["नाभिकीय संलयन","दहन","नाभिकीय विखंडन","विद्युत"], answer:"नाभिकीय संलयन"},
+  {q:"विटामिन C की कमी से कौन-सी बीमारी होती है?", options:["स्कर्वी","रातांधता","रिकेट्स","बेरीबेरी"], answer:"स्कर्वी"},
+  {q:"रक्त का लाल रंग किसके कारण होता है?", options:["हीमोग्लोबिन","आरबीसी","कैल्शियम","मायोग्लोबिन"], answer:"हीमोग्लोबिन"},
+  {q:"पौधों में भोजन किसके द्वारा तैयार होता है?", options:["क्लोरोफिल","जड़ों","बीज","शाखाओं"], answer:"क्लोरोफिल"},
+  {q:"श्वसन की प्रक्रिया में कौन-सी गैस ली जाती है?", options:["ऑक्सीजन","कार्बन डाइऑक्साइड","हाइड्रोजन","नाइट्रोजन"], answer:"ऑक्सीजन"},
+  {q:"कंप्यूटर का मस्तिष्क किसे कहा जाता है?", options:["CPU","RAM","हार्ड डिस्क","कीबोर्ड"], answer:"CPU"},
+  {q:"ओजोन परत किसे रोकती है?", options:["पराबैंगनी किरणें","गामा किरणें","इन्फ्रारेड","रेडियो तरंगें"], answer:"पराबैंगनी किरणें"},
+  {q:"भारत का पहला उपग्रह कौन सा था?", options:["आर्यभट्ट","भास्कर","इनसैट","एप्पल"], answer:"आर्यभट्ट"},
+  {q:"मनुष्य के शरीर में कितनी हड्डियाँ होती हैं?", options:["206","208","210","212"], answer:"206"},
+  {q:"क्लोरोफिल में कौन-सा धातु पाया जाता है?", options:["मैग्नीशियम","लोहा","तांबा","जस्ता"], answer:"मैग्नीशियम"},
+  {q:"रेडियोधर्मी तत्व यूरेनियम का प्रतीक क्या है?", options:["U","Ur","Um","Rn"], answer:"U"},
+  {q:"किस अम्ल को पेट का अम्ल कहा जाता है?", options:["हाइड्रोक्लोरिक अम्ल","सल्फ्यूरिक अम्ल","नाइट्रिक अम्ल","एसिटिक अम्ल"], answer:"हाइड्रोक्लोरिक अम्ल"},
+  {q:"पृथ्वी का गुरुत्वाकर्षण किसने खोजा?", options:["न्यूटन","आइंस्टीन","गैलीलियो","केपलर"], answer:"न्यूटन"},
+  {q:"किस ग्रह को लाल ग्रह कहा जाता है?", options:["मंगल","शुक्र","बुध","बृहस्पति"], answer:"मंगल"},
+  {q:"मानव शरीर में इंसुलिन किस अंग से बनता है?", options:["अग्न्याशय","यकृत","किडनी","हृदय"], answer:"अग्न्याशय"},
+  {q:"सबसे हल्की धातु कौन-सी है?", options:["लिथियम","सोडियम","एल्युमिनियम","पोटैशियम"], answer:"लिथियम"},
+
+  // ==== Static GK + Current Affairs (16) ====
+  {q:"भारत का संविधान कब लागू हुआ?", options:["26 जनवरी 1950","15 अगस्त 1947","26 नवम्बर 1949","2 अक्टूबर 1952"], answer:"26 जनवरी 1950"},
+  {q:"विश्व का सबसे बड़ा लोकतंत्र कौन सा है?", options:["भारत","अमेरिका","चीन","जापान"], answer:"भारत"},
+  {q:"भारत के प्रथम राष्ट्रपति कौन थे?", options:["डॉ. राजेन्द्र प्रसाद","डॉ. सर्वपल्ली राधाकृष्णन","जवाहरलाल नेहरू","बी.आर. आंबेडकर"], answer:"डॉ. राजेन्द्र प्रसाद"},
+  {q:"हाल ही में G20 शिखर सम्मेलन 2023 कहाँ आयोजित हुआ?", options:["नई दिल्ली","बाली","टोक्यो","लंदन"], answer:"नई दिल्ली"},
+  {q:"भारतीय संविधान की प्रस्तावना में कितने शब्द हैं?", options:["85","73","90","52"], answer:"85"},
+  {q:"भारतीय रिज़र्व बैंक का मुख्यालय कहाँ है?", options:["मुंबई","दिल्ली","कोलकाता","चेन्नई"], answer:"मुंबई"},
+  {q:"भारतीय संसद का उच्च सदन कौन सा है?", options:["राज्यसभा","लोकसभा","विधानसभा","विदेशसभा"], answer:"राज्यसभा"},
+  {q:"UN का मुख्यालय कहाँ है?", options:["न्यूयॉर्क","जेनेवा","लंदन","पेरिस"], answer:"न्यूयॉर्क"},
+  {q:"भारत में पंचायती राज कब लागू हुआ?", options:["1992","1990","1995","1998"], answer:"1992"},
+  {q:"भारत की पहली महिला प्रधानमंत्री कौन थीं?", options:["इंदिरा गांधी","सोनिया गांधी","सुषमा स्वराज","सरोजिनी नायडू"], answer:"इंदिरा गांधी"},
+  {q:"‘जन-धन योजना’ किस वर्ष शुरू हुई?", options:["2014","2016","2012","2018"], answer:"2014"},
+  {q:"भारत के किस राज्य को 'स्पाइस गार्डन' कहा जाता है?", options:["केरल","तमिलनाडु","गोवा","असम"], answer:"केरल"},
+  {q:"किस वर्ष भारत ने चंद्रयान-2 प्रक्षेपित किया?", options:["2019","2016","2017","2015"], answer:"2019"},
+  {q:"भारत का राष्ट्रीय खेल कौन सा है?", options:["हॉकी","क्रिकेट","कबड्डी","फुटबॉल"], answer:"हॉकी"},
+  {q:"भारत की पहली महिला राष्ट्रपति कौन थीं?", options:["प्रतिभा पाटिल","द्रौपदी मुर्मू","सोनिया गांधी","सरोजिनी नायडू"], answer:"प्रतिभा पाटिल"},
+  {q:"हाल ही में 2023 एशियाई खेल कहाँ हुए?", options:["हांगझोउ, चीन","दिल्ली, भारत","टोक्यो, जापान","सिंगापुर"], answer:"हांगझोउ, चीन"},
+
+  // ==== Maths + Reasoning (10) ====
+  {q:"यदि 5x = 20 तो x = ?", options:["2","3","4","5"], answer:"4"},
+  {q:"25% का 200 कितना होगा?", options:["25","50","75","100"], answer:"50"},
+  {q:"एक घड़ी में 3 बजकर 15 मिनट पर सूइयों के बीच कोण कितना होगा?", options:["7.5°","0°","15°","30°"], answer:"7.5°"},
+  {q:"श्रृंखला पूरी करें: 2, 6, 12, 20, ?", options:["30","28","32","36"], answer:"30"},
+  {q:"144 का वर्गमूल क्या है?", options:["10","11","12","13"], answer:"12"},
+  {q:"A : B = 2 : 3 और B : C = 4 : 5 तो A : B : C = ?", options:["8:12:15","2:3:5","4:5:6","6:8:10"], answer:"8:12:15"},
+  {q:"यदि किसी आयत की लंबाई 12 और चौड़ाई 8 है तो क्षेत्रफल = ?", options:["96","80","88","100"], answer:"96"},
+  {q:"एक आदमी ने 1200 रुपये में वस्तु खरीदी और 25% लाभ पर बेची। विक्रय मूल्य = ?", options:["1400","1450","1500","1600"], answer:"1500"},
+  {q:"श्रृंखला: 7, 14, 28, 56, ?", options:["84","100","112","126"], answer:"112"},
+  {q:"यदि 15 पुरुष 10 दिन में कार्य पूरा करते हैं, तो 30 पुरुष कितने दिनों में करेंगे?", options:["5","10","15","20"], answer:"5"},
+
+  // ==== Hindi (6) ====
+  {q:"'सियार' किस लिंग का शब्द है?", options:["पुल्लिंग","स्त्रीलिंग","उभयलिंग","नपुंसकलिंग"], answer:"पुल्लिंग"},
+  {q:"'सूर्य' का पर्यायवाची कौन सा है?", options:["भानु","चन्द्र","नक्षत्र","ग्रह"], answer:"भानु"},
+  {q:"'असत्य' का विलोम क्या है?", options:["सत्य","अमृत","अमर","सत्यमेव"], answer:"सत्य"},
+  {q:"'विद्या' किस संधि से बनी है?", options:["यण संधि","दीर्घ संधि","वृद्धि संधि","स्वर संधि"], answer:"वृद्धि संधि"},
+  {q:"'बड़ा' का समानार्थी शब्द कौन सा है?", options:["विशाल","लघु","सूक्ष्म","छोटा"], answer:"विशाल"},
+  {q:"'कविता' शब्द किससे बना है?", options:["कवि","काव्य","कवि+ता","काव्य+ता"], answer:"कवि"}
+];
+
+let currentQuestion = 0;
+const quizEl = document.getElementById('quiz');
+const resultEl = document.getElementById('result');
+let score = 0;
+let answers = Array(quizData.length).fill(null);
+
+function loadQuestion() {
+  let q = quizData[currentQuestion];
+  quizEl.innerHTML = `
+    <div class="question">
+      <h3>Q${currentQuestion+1}. ${q.q}</h3>
+      <div class="options">
+        ${q.options.map((opt,i)=>`
+          <label>
+            <input type="radio" name="question${currentQuestion}" value="${opt}" ${answers[currentQuestion]===opt?"checked":""}>
+            ${opt}
+          </label>`).join("")}
+      </div>
+    </div>`;
+}
+function nextQuestion() {
+  saveAnswer();
+  if(currentQuestion < quizData.length-1){ currentQuestion++; loadQuestion();}
+}
+function prevQuestion() {
+  saveAnswer();
+  if(currentQuestion > 0){ currentQuestion--; loadQuestion();}
+}
+function saveAnswer() {
+  let selected = document.querySelector(`input[name="question${currentQuestion}"]:checked`);
+  if(selected){ answers[currentQuestion] = selected.value; }
+}
+function submitQuiz() {
+  saveAnswer();
+  score = 0;
+  quizData.forEach((q,i)=>{ if(answers[i]===q.answer) score++; });
+  resultEl.innerHTML = `आपने ${quizData.length} में से ${score} प्रश्न सही दिए।`;
+}
+loadQuestion();
+</script>
+</body>
+</html>
