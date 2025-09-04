@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 46 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 46</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total)
+    const questions = [
+      // -------- Science (18) --------
+      { question: "Q1: DNA का पूरा नाम क्या है?", options: ["Deoxyribo Nucleic Acid", "Deoxyribose Nitric Acid", "Double Nucleic Acid", "Dual Nitrogen Acid"], answer: "Deoxyribo Nucleic Acid" },
+      { question: "Q2: रक्त का थक्का जमने में कौन सा विटामिन सहायक है?", options: ["Vitamin A", "Vitamin K", "Vitamin C", "Vitamin D"], answer: "Vitamin K" },
+      { question: "Q3: पाचन में कौन सा एंजाइम प्रोटीन को तोड़ता है?", options: ["Amylase", "Pepsin", "Lipase", "Maltase"], answer: "Pepsin" },
+      { question: "Q4: सबसे हल्की धातु कौन सी है?", options: ["Aluminium", "Lithium", "Sodium", "Magnesium"], answer: "Lithium" },
+      { question: "Q5: कोशिका का ऊर्जा गृह किसे कहते हैं?", options: ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"], answer: "Mitochondria" },
+      { question: "Q6: हमारे शरीर में RBC का जीवनकाल कितने दिन होता है?", options: ["90 दिन", "100 दिन", "120 दिन", "150 दिन"], answer: "120 दिन" },
+      { question: "Q7: अम्लीय वर्षा किसके कारण होती है?", options: ["Ozone", "SO2 और NO2", "CO2", "CO"], answer: "SO2 और NO2" },
+      { question: "Q8: किस गैस को 'Laughing Gas' कहते हैं?", options: ["CO2", "O2", "N2O", "NO2"], answer: "N2O" },
+      { question: "Q9: बल्ब का फिलामेंट किस धातु का होता है?", options: ["Copper", "Iron", "Tungsten", "Aluminium"], answer: "Tungsten" },
+      { question: "Q10: ग्रीन हाउस प्रभाव मुख्यतः किस गैस से होता है?", options: ["CO2", "N2", "O2", "SO2"], answer: "CO2" },
+      { question: "Q11: श्वसन क्रिया में कौन सी गैस ली जाती है?", options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], answer: "Oxygen" },
+      { question: "Q12: पानी का शुद्ध रूप क्या कहलाता है?", options: ["Hard water", "Soft water", "Distilled water", "Mineral water"], answer: "Distilled water" },
+      { question: "Q13: किस ग्रह को 'लाल ग्रह' कहते हैं?", options: ["पृथ्वी", "मंगल", "शुक्र", "बृहस्पति"], answer: "मंगल" },
+      { question: "Q14: सूर्य से पृथ्वी पर आने वाला प्रकाश कितने मिनट में पहुँचता है?", options: ["6 मिनट", "8 मिनट 20 सेकंड", "10 मिनट", "12 मिनट"], answer: "8 मिनट 20 सेकंड" },
+      { question: "Q15: दूध में कौन सा प्रोटीन पाया जाता है?", options: ["Casein", "Albumin", "Keratin", "Collagen"], answer: "Casein" },
+      { question: "Q16: पेनिसिलिन किसने खोजी थी?", options: ["Alexander Fleming", "Newton", "Pasteur", "Rutherford"], answer: "Alexander Fleming" },
+      { question: "Q17: शरीर में आयोडीन की कमी से कौन सी बीमारी होती है?", options: ["गलगंड (Goitre)", "रक्ताल्पता", "रातांधता", "स्कर्वी"], answer: "गलगंड (Goitre)" },
+      { question: "Q18: किस अम्ल को पेट का अम्ल कहा जाता है?", options: ["HCl", "H2SO4", "HNO3", "CH3COOH"], answer: "HCl" },
+
+      // -------- Static GK + Current Affairs (16) --------
+      { question: "Q19: भारत का सबसे बड़ा राज्य क्षेत्रफल के आधार पर कौन सा है?", options: ["मध्य प्रदेश", "राजस्थान", "उत्तर प्रदेश", "महाराष्ट्र"], answer: "राजस्थान" },
+      { question: "Q20: हाल ही में G20 शिखर सम्मेलन 2023 कहाँ हुआ?", options: ["नई दिल्ली", "मुंबई", "जयपुर", "लखनऊ"], answer: "नई दिल्ली" },
+      { question: "Q21: 'जय जवान जय किसान' का नारा किसने दिया?", options: ["नेहरू", "शास्त्री", "गांधी", "सुभाष"], answer: "शास्त्री" },
+      { question: "Q22: भारत का राष्ट्रीय पशु कौन सा है?", options: ["गाय", "बाघ", "शेर", "हाथी"], answer: "बाघ" },
+      { question: "Q23: भारतीय संविधान कब लागू हुआ?", options: ["15 अगस्त 1947", "26 जनवरी 1950", "2 अक्टूबर 1949", "1 जनवरी 1951"], answer: "26 जनवरी 1950" },
+      { question: "Q24: नोबेल पुरस्कार पाने वाली पहली भारतीय महिला कौन थीं?", options: ["किरण बेदी", "इंदिरा गांधी", "मदर टेरेसा", "कल्पना चावला"], answer: "मदर टेरेसा" },
+      { question: "Q25: विश्व का सबसे बड़ा लोकतंत्र कौन सा है?", options: ["अमेरिका", "भारत", "रूस", "चीन"], answer: "भारत" },
+      { question: "Q26: संयुक्त राष्ट्र की स्थापना कब हुई थी?", options: ["1940", "1945", "1950", "1960"], answer: "1945" },
+      { question: "Q27: भारत का पहला उपग्रह कौन सा था?", options: ["भास्कर", "आर्यभट्ट", "रोहिणी", "इनसैट"], answer: "आर्यभट्ट" },
+      { question: "Q28: 2024 ओलंपिक खेल कहाँ होंगे?", options: ["पेरिस", "टोक्यो", "लंदन", "बीजिंग"], answer: "पेरिस" },
+      { question: "Q29: किसे 'भारतीय मिसाइल मैन' कहा जाता है?", options: ["डॉ. एपीजे अब्दुल कलाम", "विक्रम साराभाई", "होमी भाभा", "सीवी रमन"], answer: "डॉ. एपीजे अब्दुल कलाम" },
+      { question: "Q30: प्लासी का युद्ध कब हुआ?", options: ["1526", "1757", "1857", "1761"], answer: "1757" },
+      { question: "Q31: 'वंदे मातरम्' गीत किसने लिखा?", options: ["बंकिम चंद्र चट्टोपाध्याय", "रवीन्द्रनाथ टैगोर", "महात्मा गांधी", "तुलसीदास"], answer: "बंकिम चंद्र चट्टोपाध्याय" },
+      { question: "Q32: विश्व पर्यावरण दिवस कब मनाया जाता है?", options: ["5 जून", "22 अप्रैल", "14 नवंबर", "28 फरवरी"], answer: "5 जून" },
+      { question: "Q33: भारत का सबसे ऊँचा पुरस्कार कौन सा है?", options: ["पद्म विभूषण", "भारत रत्न", "गांधी शांति पुरस्कार", "पद्म श्री"], answer: "भारत रत्न" },
+      { question: "Q34: भारतीय रिजर्व बैंक की स्थापना कब हुई?", options: ["1935", "1947", "1950", "1965"], answer: "1935" },
+
+      // -------- Maths + Reasoning (10) --------
+      { question: "Q35: यदि 12 × 12 = ?", options: ["124", "144", "122", "132"], answer: "144" },
+      { question: "Q36: 144 का वर्गमूल क्या है?", options: ["10", "11", "12", "13"], answer: "12" },
+      { question: "Q37: यदि किसी वस्तु का अंकित मूल्य 500 है और उस पर 10% छूट है तो विक्रय मूल्य क्या होगा?", options: ["400", "450", "475", "490"], answer: "450" },
+      { question: "Q38: श्रेणी में अगली संख्या क्या होगी? 2, 4, 8, 16, ?", options: ["18", "20", "32", "24"], answer: "32" },
+      { question: "Q39: यदि A का आयु 24 वर्ष है और B की आयु A से दोगुनी है, तो B की आयु क्या होगी?", options: ["36", "42", "48", "50"], answer: "48" },
+      { question: "Q40: (15 × 12) ÷ 6 = ?", options: ["25", "20", "30", "35"], answer: "30" },
+      { question: "Q41: एक ट्रेन 60 km/h की गति से 120 km की दूरी कितने समय में तय करेगी?", options: ["1 घंटा", "1.5 घंटा", "2 घंटा", "2.5 घंटा"], answer: "2 घंटा" },
+      { question: "Q42: यदि किसी राशि पर 2 वर्ष में 10% वार्षिक साधारण ब्याज 200 है, तो मूलधन क्या होगा?", options: ["800", "900", "1000", "1200"], answer: "1000" },
+      { question: "Q43: 25% of 400 कितना होगा?", options: ["50", "75", "100", "125"], answer: "100" },
+      { question: "Q44: 5, 10, 20, 40, ? अगली संख्या क्या होगी?", options: ["50", "60", "70", "80"], answer: "80" },
+
+      // -------- Hindi (6) --------
+      { question: "Q45: 'रामचरितमानस' के रचयिता कौन हैं?", options: ["तुलसीदास", "सूरदास", "कबीर", "वाल्मीकि"], answer: "तुलसीदास" },
+      { question: "Q46: 'कामायनी' के कवि कौन हैं?", options: ["जयशंकर प्रसाद", "महादेवी वर्मा", "रामधारी सिंह दिनकर", "सुमित्रानंदन पंत"], answer: "जयशंकर प्रसाद" },
+      { question: "Q47: 'मधुशाला' के रचयिता कौन हैं?", options: ["हरिवंश राय बच्चन", "निराला", "दिनकर", "सुभद्राकुमारी चौहान"], answer: "हरिवंश राय बच्चन" },
+      { question: "Q48: 'गीतांजलि' किस भाषा में लिखी गई?", options: ["हिंदी", "बांग्ला", "संस्कृत", "उर्दू"], answer: "बांग्ला" },
+      { question: "Q49: 'मेघदूत' के रचयिता कौन हैं?", options: ["कालिदास", "भवभूति", "बाणभट्ट", "तुलसीदास"], answer: "कालिदास" },
+      { question: "Q50: 'साकेत' महाकाव्य के रचयिता कौन हैं?", options: ["सुमित्रानंदन पंत", "मैथिलीशरण गुप्त", "निराला", "दिनकर"], answer: "मैथिलीशरण गुप्त" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
