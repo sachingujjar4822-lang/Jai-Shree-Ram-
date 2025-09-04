@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 9 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 9</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total – Delhi Police PYQs style: GK + Maths + Reasoning + Science + Current Affairs)
+    const questions = [
+      { question: "प्रश्न 1: 144 का वर्गमूल कितना है?", options: ["10", "11", "12", "13"], answer: "12" },
+      { question: "प्रश्न 2: श्रृंखला पूरी करें: 2, 6, 12, 20, ?", options: ["28", "30", "32", "34"], answer: "30" },
+      { question: "प्रश्न 3: अगर 15 पेन की कीमत 300 है, तो 8 पेन की कीमत कितनी होगी?", options: ["150", "160", "180", "200"], answer: "160" },
+      { question: "प्रश्न 4: 35% of 480 = ?", options: ["150", "160", "168", "170"], answer: "168" },
+      { question: "प्रश्न 5: किसी ट्रेन की गति 60 किमी/घंटा है, वह 2 घंटे में कितनी दूरी तय करेगी?", options: ["100", "110", "120", "150"], answer: "120" },
+
+      { question: "प्रश्न 6: 'जय जवान जय किसान' नारा किसने दिया?", options: ["महात्मा गांधी", "लाल बहादुर शास्त्री", "सुभाष बोस", "नेहरू"], answer: "लाल बहादुर शास्त्री" },
+      { question: "प्रश्न 7: UNO की स्थापना कब हुई?", options: ["1940", "1945", "1950", "1960"], answer: "1945" },
+      { question: "प्रश्न 8: दिल्ली पुलिस मुख्यालय कहाँ स्थित है?", options: ["मुंबई", "नई दिल्ली", "चेन्नई", "कोलकाता"], answer: "नई दिल्ली" },
+      { question: "प्रश्न 9: भारत का राष्ट्रीय खेल क्या है?", options: ["क्रिकेट", "हॉकी", "फुटबॉल", "कबड्डी"], answer: "हॉकी" },
+      { question: "प्रश्न 10: संविधान सभा के अध्यक्ष कौन थे?", options: ["राजेंद्र प्रसाद", "अंबेडकर", "नेहरू", "पटेल"], answer: "राजेंद्र प्रसाद" },
+
+      { question: "प्रश्न 11: 729 का घनमूल क्या है?", options: ["7", "8", "9", "10"], answer: "9" },
+      { question: "प्रश्न 12: श्रृंखला: 7, 14, 28, 56, ?", options: ["84", "100", "112", "120"], answer: "112" },
+      { question: "प्रश्न 13: यदि A की आयु 24 है और B की आयु 20 है, तो 6 साल बाद उनका औसत आयु कितना होगा?", options: ["24", "25", "26", "27"], answer: "26" },
+      { question: "प्रश्न 14: 25 × 25 = ?", options: ["525", "625", "725", "825"], answer: "625" },
+      { question: "प्रश्न 15: 40% of 750 = ?", options: ["250", "280", "300", "320"], answer: "300" },
+
+      { question: "प्रश्न 16: 'वंदे मातरम्' गीत किसने लिखा?", options: ["रवींद्रनाथ टैगोर", "बंकिम चंद्र चट्टोपाध्याय", "महात्मा गांधी", "सरोजिनी नायडू"], answer: "बंकिम चंद्र चट्टोपाध्याय" },
+      { question: "प्रश्न 17: भारत का सबसे बड़ा राज्य क्षेत्रफल के आधार पर कौन सा है?", options: ["उत्तर प्रदेश", "मध्य प्रदेश", "राजस्थान", "महाराष्ट्र"], answer: "राजस्थान" },
+      { question: "प्रश्न 18: Microsoft का संस्थापक कौन है?", options: ["स्टीव जॉब्स", "बिल गेट्स", "लैरी पेज", "एलन मस्क"], answer: "बिल गेट्स" },
+      { question: "प्रश्न 19: विश्व का सबसे बड़ा ग्रह कौन सा है?", options: ["शनि", "बृहस्पति", "पृथ्वी", "मंगल"], answer: "बृहस्पति" },
+      { question: "प्रश्न 20: सूर्य का सबसे बाहरी परत क्या कहलाती है?", options: ["फोटोस्फीयर", "कोरोना", "क्रोमोस्फीयर", "लिथोस्फीयर"], answer: "कोरोना" },
+
+      { question: "प्रश्न 21: यदि किसी संख्या का 25% = 45 है, तो संख्या कितनी होगी?", options: ["160", "170", "180", "190"], answer: "180" },
+      { question: "प्रश्न 22: श्रृंखला: 3, 9, 27, 81, ?", options: ["162", "243", "324", "400"], answer: "243" },
+      { question: "प्रश्न 23: 15 × 18 = ?", options: ["260", "270", "280", "290"], answer: "270" },
+      { question: "प्रश्न 24: 12:30 को घड़ी में घंटे और मिनट की सुई के बीच कोण कितना होगा?", options: ["165°", "170°", "175°", "180°"], answer: "165°" },
+      { question: "प्रश्न 25: एक आदमी 15 किमी/घंटा की गति से 30 मिनट चलता है, दूरी कितनी होगी?", options: ["5 किमी", "7.5 किमी", "10 किमी", "12 किमी"], answer: "7.5 किमी" },
+
+      { question: "प्रश्न 26: भारतीय रिजर्व बैंक की स्थापना कब हुई?", options: ["1935", "1947", "1950", "1920"], answer: "1935" },
+      { question: "प्रश्न 27: 'गीता रहस्य' किसने लिखी?", options: ["महात्मा गांधी", "बाल गंगाधर तिलक", "राजा राममोहन राय", "विवेकानंद"], answer: "बाल गंगाधर तिलक" },
+      { question: "प्रश्न 28: ताजमहल कहाँ स्थित है?", options: ["दिल्ली", "आगरा", "जयपुर", "लखनऊ"], answer: "आगरा" },
+      { question: "प्रश्न 29: नोबेल पुरस्कार पाने वाली पहली भारतीय महिला कौन थीं?", options: ["इंदिरा गांधी", "मदर टेरेसा", "किरण बेदी", "कल्पना चावला"], answer: "मदर टेरेसा" },
+      { question: "प्रश्न 30: संविधान के निर्माता किसे कहा जाता है?", options: ["गांधीजी", "डॉ. भीमराव अंबेडकर", "राजा राममोहन राय", "नेहरू"], answer: "डॉ. भीमराव अंबेडकर" },
+
+      { question: "प्रश्न 31: 56 ÷ 7 × 9 = ?", options: ["63", "64", "72", "80"], answer: "72" },
+      { question: "प्रश्न 32: श्रृंखला: 5, 10, 20, 40, ?", options: ["60", "70", "80", "100"], answer: "80" },
+      { question: "प्रश्न 33: यदि 8 आदमी 12 दिन में काम पूरा करते हैं, तो 6 आदमी वही काम कितने दिन में करेंगे?", options: ["14", "15", "16", "18"], answer: "16" },
+      { question: "प्रश्न 34: 25% of 640 = ?", options: ["150", "155", "160", "165"], answer: "160" },
+      { question: "प्रश्न 35: एक डिब्बे में 6 लाल और 4 हरे गेंदें हैं। लाल गेंद निकालने की प्रायिकता?", options: ["1/2", "3/5", "2/5", "4/5"], answer: "3/5" },
+
+      { question: "प्रश्न 36: 'जय हिंद' नारा किसने दिया?", options: ["सुभाष चंद्र बोस", "गांधीजी", "नेहरू", "लाल बहादुर शास्त्री"], answer: "सुभाष चंद्र बोस" },
+      { question: "प्रश्न 37: भारत का राष्ट्रीय पशु क्या है?", options: ["शेर", "हाथी", "बाघ", "गाय"], answer: "बाघ" },
+      { question: "प्रश्न 38: महात्मा गांधी का जन्म कहाँ हुआ था?", options: ["साबरमती", "पोरबंदर", "दिल्ली", "राजकोट"], answer: "पोरबंदर" },
+      { question: "प्रश्न 39: 2023 में G20 शिखर सम्मेलन कहाँ हुआ?", options: ["मुंबई", "नई दिल्ली", "जयपुर", "चंडीगढ़"], answer: "नई दिल्ली" },
+      { question: "प्रश्न 40: UNO का मुख्यालय कहाँ है?", options: ["पेरिस", "जिनेवा", "न्यूयॉर्क", "लंदन"], answer: "न्यूयॉर्क" },
+
+      { question: "प्रश्न 41: 22 × 15 = ?", options: ["320", "330", "340", "350"], answer: "330" },
+      { question: "प्रश्न 42: श्रृंखला: 2, 5, 11, 23, ?", options: ["45", "46", "47", "48"], answer: "47" },
+      { question: "प्रश्न 43: एक वस्तु की कीमत 20% बढ़कर 240 हो गई, मूल कीमत क्या थी?", options: ["180", "190", "200", "210"], answer: "200" },
+      { question: "प्रश्न 44: 40 लीटर मिश्रण में 25% दूध है, दूध की मात्रा कितनी है?", options: ["8", "9", "10", "12"], answer: "10" },
+      { question: "प्रश्न 45: 0.75 × 600 = ?", options: ["400", "420", "440", "450"], answer: "450" },
+
+      { question: "प्रश्न 46: भारत का राष्ट्रीय ध्वज कब अपनाया गया?", options: ["22 जुलाई 1947", "15 अगस्त 1947", "26 जनवरी 1950", "2 अक्टूबर 1949"], answer: "22 जुलाई 1947" },
+      { question: "प्रश्न 47: भारत की राजधानी क्या है?", options: ["दिल्ली", "मुंबई", "कोलकाता", "चेन्नई"], answer: "दिल्ली" },
+      { question: "प्रश्न 48: 'स्वराज मेरा जन्मसिद्ध अधिकार है' किसने कहा?", options: ["बाल गंगाधर तिलक", "गांधीजी", "नेहरू", "लाल बहादुर शास्त्री"], answer: "बाल गंगाधर तिलक" },
+      { question: "प्रश्न 49: भारत में सबसे अधिक जनसंख्या वाला राज्य कौन सा है?", options: ["उत्तर प्रदेश", "बिहार", "महाराष्ट्र", "मध्य प्रदेश"], answer: "उत्तर प्रदेश" },
+      { question: "प्रश्न 50: प्लासी का युद्ध कब हुआ?", options: ["1757", "1857", "1761", "1526"], answer: "1757" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
