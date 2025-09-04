@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 5 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #bbb; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-weight: bold; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #eef; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    .next { background: #007bff; color: white; }
+    .back { background: #6c757d; color: white; }
+    .submit { background: #28a745; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 18px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #f1f3f5; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 5</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      } else {
+        submitQuiz();
+      }
+    }, 1000);
+
+    // 50 Questions for Mock Test 5
+    const questions = [
+      { question: "प्रश्न 1: 'भारत छोड़ो आंदोलन' कब शुरू हुआ?", options: ["1942", "1930", "1920", "1919"], answer: "1942" },
+      { question: "प्रश्न 2: 'भारत का सबसे ऊँचा बांध' कौन सा है?", options: ["टिहरी बांध", "भाखड़ा नांगल", "हीराकुंड", "सरदार सरोवर"], answer: "टिहरी बांध" },
+      { question: "प्रश्न 3: 'भारत का सबसे बड़ा राज्य (जनसंख्या)' कौन सा है?", options: ["उत्तर प्रदेश", "बिहार", "महाराष्ट्र", "पश्चिम बंगाल"], answer: "उत्तर प्रदेश" },
+      { question: "प्रश्न 4: 'मंगलयान' किस वर्ष प्रक्षेपित हुआ?", options: ["2013", "2010", "2015", "2017"], answer: "2013" },
+      { question: "प्रश्न 5: 'अंतर्राष्ट्रीय महिला दिवस' कब मनाया जाता है?", options: ["8 मार्च", "5 जून", "21 जून", "14 नवम्बर"], answer: "8 मार्च" },
+      { question: "प्रश्न 6: 'पुलवामा हमला' किस वर्ष हुआ?", options: ["2019", "2017", "2015", "2020"], answer: "2019" },
+      { question: "प्रश्न 7: 'विश्व स्वास्थ्य संगठन' का मुख्यालय कहाँ है?", options: ["जिनेवा", "पेरिस", "न्यूयॉर्क", "लंदन"], answer: "जिनेवा" },
+      { question: "प्रश्न 8: 'भारत का पहला उपग्रह' कौन सा था?", options: ["आर्यभट्ट", "भास्कर", "रोहिणी", "इंसट"], answer: "आर्यभट्ट" },
+      { question: "प्रश्न 9: 'हिमालय की सबसे ऊँची चोटी' कौन सी है?", options: ["एवरेस्ट", "K2", "धौलागिरी", "नंदा देवी"], answer: "एवरेस्ट" },
+      { question: "प्रश्न 10: 'भारत का राष्ट्रीय पक्षी' कौन सा है?", options: ["मोर", "तोता", "कबूतर", "कोयल"], answer: "मोर" },
+      { question: "प्रश्न 11: 'भारतीय संविधान' में कितने अनुच्छेद हैं?", options: ["395", "356", "500", "450"], answer: "395" },
+      { question: "प्रश्न 12: 'विश्व का सबसे बड़ा महासागर' कौन सा है?", options: ["प्रशांत", "अटलांटिक", "हिंद", "आर्कटिक"], answer: "प्रशांत" },
+      { question: "प्रश्न 13: 'पाकिस्तान की राजधानी' क्या है?", options: ["इस्लामाबाद", "कराची", "लाहौर", "पेशावर"], answer: "इस्लामाबाद" },
+      { question: "प्रश्न 14: 'सुभाष चंद्र बोस' ने आज़ाद हिन्द फौज कब बनाई?", options: ["1943", "1940", "1942", "1939"], answer: "1943" },
+      { question: "प्रश्न 15: 'लोहा' का रासायनिक प्रतीक क्या है?", options: ["Fe", "Cu", "Ag", "Au"], answer: "Fe" },
+      { question: "प्रश्न 16: 'विश्व का सबसे छोटा देश' कौन सा है?", options: ["वेटिकन सिटी", "मोनाको", "भूटान", "मालदीव"], answer: "वेटिकन सिटी" },
+      { question: "प्रश्न 17: 'किस युद्ध के बाद प्लासी का युद्ध हुआ था?", options: ["1757", "1764", "1857", "1707"], answer: "1757" },
+      { question: "प्रश्न 18: 'भारत में पहला आम चुनाव कब हुआ?", options: ["1951-52", "1947-48", "1955-56", "1960-61"], answer: "1951-52" },
+      { question: "प्रश्न 19: 'भारत का सबसे बड़ा रेलवे स्टेशन' कौन सा है?", options: ["हावड़ा", "नई दिल्ली", "लखनऊ", "चेन्नई"], answer: "हावड़ा" },
+      { question: "प्रश्न 20: 'मदर टेरेसा' को भारत रत्न कब मिला?", options: ["1980", "1985", "1990", "1975"], answer: "1980" },
+      { question: "प्रश्न 21: 'विश्व की सबसे लंबी नदी' कौन सी है?", options: ["नील", "अमेजन", "गंगा", "यांग्त्ज़े"], answer: "नील" },
+      { question: "प्रश्न 22: 'भारतीय रिजर्व बैंक' की स्थापना कब हुई?", options: ["1935", "1947", "1950", "1925"], answer: "1935" },
+      { question: "प्रश्न 23: 'जैव ईंधन' किससे प्राप्त होता है?", options: ["वनस्पति व तेल", "कोयला", "पेट्रोल", "खनिज"], answer: "वनस्पति व तेल" },
+      { question: "प्रश्न 24: 'ताजमहल' किसने बनवाया?", options: ["शाहजहाँ", "अकबर", "हुमायूँ", "जहाँगीर"], answer: "शाहजहाँ" },
+      { question: "प्रश्न 25: 'भारत में सबसे बड़ी जनगणना' कितने वर्षों बाद होती है?", options: ["10 वर्ष", "5 वर्ष", "7 वर्ष", "15 वर्ष"], answer: "10 वर्ष" },
+      { question: "प्रश्न 26: 'ऑस्ट्रेलिया की राजधानी' क्या है?", options: ["कैनबरा", "सिडनी", "मेलबर्न", "ब्रिस्बेन"], answer: "कैनबरा" },
+      { question: "प्रश्न 27: 'भारत का राष्ट्रीय ध्वज' किसने डिजाइन किया?", options: ["पिंगली वेंकैया", "रवींद्रनाथ टैगोर", "बाल गंगाधर तिलक", "लाला लाजपत राय"], answer: "पिंगली वेंकैया" },
+      { question: "प्रश्न 28: 'गांधी-इरविन समझौता' कब हुआ?", options: ["1931", "1920", "1942", "1919"], answer: "1931" },
+      { question: "प्रश्न 29: 'भारतीय थल सेना के पहले प्रमुख कौन थे?", options: ["जनरल करियप्पा", "सैम मानेकशॉ", "केएम करियप्पा", "जनरल चौधरी"], answer: "जनरल करियप्पा" },
+      { question: "प्रश्न 30: 'लाल बहादुर शास्त्री' का नारा क्या था?", options: ["जय जवान जय किसान", "करो या मरो", "साइमन गो बैक", "वंदे मातरम्"], answer: "जय जवान जय किसान" },
+      { question: "प्रश्न 31: 'भारत का सबसे बड़ा खेल का मैदान' कौन सा है?", options: ["मेदाान कोलकाता", "वांखड़े", "अरुण जेटली", "चेपक"], answer: "मेदाान कोलकाता" },
+      { question: "प्रश्न 32: 'विश्व की सबसे ऊँची प्रतिमा' कौन सी है?", options: ["स्टेच्यू ऑफ यूनिटी", "स्टेच्यू ऑफ लिबर्टी", "क्राइस्ट रिडीमर", "स्प्रिंग टेंपल"], answer: "स्टेच्यू ऑफ यूनिटी" },
+      { question: "प्रश्न 33: 'रेल मंत्रालय' का गठन कब हुआ?", options: ["1905", "1951", "1947", "1960"], answer: "1951" },
+      { question: "प्रश्न 34: 'पृथ्वी दिवस' कब मनाया जाता है?", options: ["22 अप्रैल", "5 जून", "21 मार्च", "10 दिसम्बर"], answer: "22 अप्रैल" },
+      { question: "प्रश्न 35: 'भारत का राष्ट्रीय वृक्ष' कौन सा है?", options: ["बरगद", "पीपल", "नीम", "आम"], answer: "बरगद" },
+      { question: "प्रश्न 36: 'भारत का पहला परमाणु परीक्षण' कहाँ हुआ?", options: ["पोखरण", "त्रिवेंद्रम", "मुंबई", "भाभा केंद्र"], answer: "पोखरण" },
+      { question: "प्रश्न 37: 'सिक्किम' भारत का हिस्सा कब बना?", options: ["1975", "1965", "1980", "1970"], answer: "1975" },
+      { question: "प्रश्न 38: 'विश्व का सबसे तेज़ जानवर' कौन सा है?", options: ["चीताह", "शेर", "बाघ", "घोड़ा"], answer: "चीताह" },
+      { question: "प्रश्न 39: 'गुलामी प्रथा का अंत' कब हुआ?", options: ["1843", "1857", "1905", "1920"], answer: "1843" },
+      { question: "प्रश्न 40: 'कन्याकुमारी' किस राज्य में है?", options: ["तमिलनाडु", "केरल", "आंध्र प्रदेश", "कर्नाटक"], answer: "तमिलनाडु" },
+      { question: "प्रश्न 41: 'सिकंदर' भारत में कब आया?", options: ["326 ईसा पूर्व", "500 ईसा पूर्व", "200 ईसा पूर्व", "100 ईसा पूर्व"], answer: "326 ईसा पूर्व" },
+      { question: "प्रश्न 42: 'दुनिया का सबसे ठंडा स्थान' कौन सा है?", options: ["ओयम्याकॉन", "अंटार्कटिका", "साइबेरिया", "ग्रीनलैंड"], answer: "ओयम्याकॉन" },
+      { question: "प्रश्न 43: 'भारत का पहला समाचार पत्र' कौन सा था?", options: ["बंगाल गजट", "हिंदुस्तान टाइम्स", "टाइम्स ऑफ इंडिया", "अमर उजाला"], answer: "बंगाल गजट" },
+      { question: "प्रश्न 44: 'वर्ल्ड ट्रेड ऑर्गेनाइजेशन' कब बनी?", options: ["1995", "1990", "1985", "2000"], answer: "1995" },
+      { question: "प्रश्न 45: 'संविधान सभा' का गठन कब हुआ?", options: ["1946", "1947", "1950", "1935"], answer: "1946" },
+      { question: "प्रश्न 46: 'भारतीय नौसेना के जनक' किसे कहा जाता है?", options: ["चोज़ा राजवंश", "शिवाजी", "अकबर", "राजा राजा चोल"], answer: "शिवाजी" },
+      { question: "प्रश्न 47: 'बॉलीवुड का पहला रंगीन फिल्म' कौन सी थी?", options: ["किस्मत", "आन", "आलम आरा", "मदर इंडिया"], answer: "आन" },
+      { question: "प्रश्न 48: 'भारत का सबसे ऊँचा ज्वालामुखी' कौन सा है?", options: ["बैरन द्वीप", "क्राकाटोआ", "फूजी", "किलिमंजारो"], answer: "बैरन द्वीप" },
+      { question: "प्रश्न 49: 'भारतीय वायु सेना' का आदर्श वाक्य क्या है?", options: ["नभः स्पृशं दीप्तम्", "जय जवान जय किसान", "सत्यमेव जयते", "वन्दे मातरम्"], answer: "नभः स्पृशं दीप्तम्" },
+      { question: "प्रश्न 50: 'भारतीय क्रिकेट टीम' ने पहला विश्व कप कब जीता?", options: ["1983", "1987", "1996", "2011"], answer: "1983" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
