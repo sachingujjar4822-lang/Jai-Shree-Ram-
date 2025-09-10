@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agniveer GD Mock Test 47</title>
+  <style>
+    body {font-family: Arial, sans-serif; margin: 20px; background:#f9f9f9;}
+    .container {max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+    h1 {text-align: center;}
+    .question {margin-bottom: 15px;}
+    .options label {display: block; margin-bottom: 5px;}
+    .navigation {margin-top: 20px; text-align: center;}
+    button {padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; background: #007BFF; color: white; cursor: pointer;}
+    button:hover {background: #0056b3;}
+    #result {margin-top: 20px; font-weight: bold; text-align: center;}
+    #timer {text-align:right; font-weight:bold; margin-bottom:20px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>अग्निवीर GD मॉक टेस्ट 47</h1>
+    <div id="timer">शेष समय: <span id="time">30:00</span></div>
+    <form id="quizForm">
+      <div id="questionContainer"></div>
+      <div class="navigation">
+        <button type="button" id="prevBtn">पिछला</button>
+        <button type="button" id="nextBtn">अगला</button>
+        <button type="button" id="submitBtn">सबमिट</button>
+      </div>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      // ==== विज्ञान (18) ====
+      {q:"कौन सा विटामिन एस्कॉर्बिक एसिड कहलाता है?", options:["विटामिन A","विटामिन B12","विटामिन C","विटामिन D"], answer:"विटामिन C"},
+      {q:"सोडा वाटर बनाने में कौन सी गैस प्रयुक्त होती है?", options:["ऑक्सीजन","कार्बन डाइऑक्साइड","नाइट्रोजन","हाइड्रोजन"], answer:"कार्बन डाइऑक्साइड"},
+      {q:"विद्युत धारा की इकाई क्या है?", options:["वोल्ट","ओम","एम्पीयर","वाट"], answer:"एम्पीयर"},
+      {q:"अनुवांशिकी के जनक किसे कहा जाता है?", options:["डार्विन","मेंडल","पाश्चर","न्यूटन"], answer:"मेंडल"},
+      {q:"कोशिका का कौन सा भाग आनुवंशिक पदार्थ रखता है?", options:["न्यूक्लियस","साइटोप्लाज्म","राइबोसोम","माइटोकॉन्ड्रिया"], answer:"न्यूक्लियस"},
+      {q:"रक्त का लाल रंग किस कारण से होता है?", options:["क्लोरोफिल","हीमोग्लोबिन","मायोग्लोबिन","राइबोफ्लेविन"], answer:"हीमोग्लोबिन"},
+      {q:"वॉशिंग सोडा का रासायनिक सूत्र क्या है?", options:["Na2CO3","NaHCO3","CaCO3","K2CO3"], answer:"Na2CO3"},
+      {q:"मानव शरीर का कौन सा अंग रक्त शुद्ध करता है?", options:["हृदय","यकृत","गुर्दा","फेफड़े"], answer:"गुर्दा"},
+      {q:"प्रकाश की गति लगभग कितनी होती है?", options:["3×10^8 m/s","3×10^6 m/s","3×10^5 km/s","A और C दोनों"], answer:"A और C दोनों"},
+      {q:"भूकंप के अध्ययन को क्या कहते हैं?", options:["इकोलॉजी","सीस्मोलॉजी","मौसम विज्ञान","भूविज्ञान"], answer:"सीस्मोलॉजी"},
+      {q:"सार्वभौमिक दाता कौन सा रक्त समूह है?", options:["A","B","AB","O नकारात्मक"], answer:"O नकारात्मक"},
+      {q:"सिरके में कौन सा अम्ल पाया जाता है?", options:["फॉर्मिक अम्ल","एसिटिक अम्ल","साइट्रिक अम्ल","लैक्टिक अम्ल"], answer:"एसिटिक अम्ल"},
+      {q:"कौन सा ग्रह 'प्रातः तारा' कहलाता है?", options:["मंगल","शुक्र","बुध","शनि"], answer:"शुक्र"},
+      {q:"बल की SI इकाई क्या है?", options:["जूल","न्यूटन","पास्कल","वाट"], answer:"न्यूटन"},
+      {q:"निकट दृष्टिदोष सुधारने के लिए कौन सा लेंस प्रयोग किया जाता है?", options:["अवतल","उत्तल","सिलेंड्रिकल","बाईफोकल"], answer:"अवतल"},
+      {q:"DNA का पूर्ण रूप क्या है?", options:["डीऑक्सीराइबोन्यूक्लिक अम्ल","डायऑक्सीराइबोन्यूक्लिक अम्ल","डीऑक्सीराइबोज अम्ल","कोई नहीं"], answer:"डीऑक्सीराइबोन्यूक्लिक अम्ल"},
+      {q:"प्रकाश संश्लेषण के लिए कौन सी गैस आवश्यक है?", options:["ऑक्सीजन","नाइट्रोजन","कार्बन डाइऑक्साइड","हाइड्रोजन"], answer:"कार्बन डाइऑक्साइड"},
+      {q:"पौधे का कौन सा भाग प्रकाश संश्लेषण करता है?", options:["जड़","तना","पत्ता","फूल"], answer:"पत्ता"},
+
+      // ==== सामान्य ज्ञान व करंट अफेयर्स (16) ====
+      {q:"भारत की पहली महिला राष्ट्रपति कौन थीं?", options:["प्रतिभा पाटिल","इंदिरा गांधी","सरोजिनी नायडू","सोनिया गांधी"], answer:"प्रतिभा पाटिल"},
+      {q:"भारतीय संविधान कब लागू हुआ?", options:["1947","1949","1950","1952"], answer:"1950"},
+      {q:"झारखंड की राजधानी क्या है?", options:["रांची","पटना","रायपुर","जमशेदपुर"], answer:"रांची"},
+      {q:"उत्तर प्रदेश के मुख्यमंत्री (2025) कौन हैं?", options:["योगी आदित्यनाथ","अखिलेश यादव","मायावती","केशव मौर्य"], answer:"योगी आदित्यनाथ"},
+      {q:"भारत का 'उगते सूर्य का प्रदेश' किसे कहते हैं?", options:["अरुणाचल प्रदेश","नगालैंड","असम","मेघालय"], answer:"अरुणाचल प्रदेश"},
+      {q:"भारत का राष्ट्रगान किसने लिखा?", options:["रवीन्द्रनाथ टैगोर","बंकिमचन्द्र चट्टोपाध्याय","महात्मा गांधी","जवाहरलाल नेहरू"], answer:"रवीन्द्रनाथ टैगोर"},
+      {q:"सूर्य मंदिर कहाँ स्थित है?", options:["कोणार्क","खजुराहो","एलोरा","मदुरै"], answer:"कोणार्क"},
+      {q:"2024 ओलंपिक किस देश ने आयोजित किए?", options:["अमेरिका","फ्रांस","जापान","चीन"], answer:"फ्रांस"},
+      {q:"'प्लासी का युद्ध' कब हुआ?", options:["1757","1761","1857","1947"], answer:"1757"},
+      {q:"कौन सी नदी 'दक्षिण गंगा' कहलाती है?", options:["गोदावरी","कृष्णा","कावेरी","नर्मदा"], answer:"गोदावरी"},
+      {q:"बांग्लादेश की मुद्रा क्या है?", options:["टका","रुपया","रियाल","येन"], answer:"टका"},
+      {q:"भारत के 'मिसाइल मैन' किसे कहा जाता है?", options:["विक्रम साराभाई","एपीजे अब्दुल कलाम","होमी भाभा","राजा रामन्ना"], answer:"एपीजे अब्दुल कलाम"},
+      {q:"भारत का सर्वोच्च नागरिक सम्मान कौन सा है?", options:["पद्म विभूषण","भारत रत्न","पद्म श्री","गैलेंट्री अवॉर्ड"], answer:"भारत रत्न"},
+      {q:"ISRO का मुख्यालय कहाँ है?", options:["बेंगलुरु","हैदराबाद","चेन्नई","मुंबई"], answer:"बेंगलुरु"},
+      {q:"भारत के पहले प्रधानमंत्री कौन थे?", options:["महात्मा गांधी","सरदार पटेल","जवाहरलाल नेहरू","राजेन्द्र प्रसाद"], answer:"जवाहरलाल नेहरू"},
+      {q:"लाल किला किस मुगल शासक ने बनवाया?", options:["अकबर","औरंगज़ेब","शाहजहाँ","बाबर"], answer:"शाहजहाँ"},
+
+      // ==== गणित व रीजनिंग (10) ====
+      {q:"15 × 18 = ?", options:["270","280","285","295"], answer:"270"},
+      {q:"यदि 3x = 18, तो x = ?", options:["3","5","6","9"], answer:"6"},
+      {q:"484 का वर्गमूल क्या है?", options:["20","21","22","23"], answer:"22"},
+      {q:"श्रृंखला पूरी करें: 2, 6, 12, 20, ?", options:["28","30","32","34"], answer:"30"},
+      {q:"10, 20, 30, 40, 50 का औसत क्या है?", options:["20","25","30","35"], answer:"30"},
+      {q:"सरलीकरण करें: 144 ÷ 12 × 3", options:["30","33","36","40"], answer:"36"},
+      {q:"47 के बाद अगली अभाज्य संख्या कौन सी है?", options:["49","51","53","59"], answer:"53"},
+      {q:"यदि P=16, Q=18, R=20, तो औसत क्या होगा?", options:["16","18","19","20"], answer:"18"},
+      {q:"अलग संख्या चुनें: 64, 125, 216, 343", options:["64","125","216","343"], answer:"64"},
+      {q:"यदि A=1, B=2, तो Z = ?", options:["24","25","26","27"], answer:"26"},
+
+      // ==== हिन्दी (6) ====
+      {q:"'गोदान' उपन्यास किसने लिखा?", options:["महादेवी वर्मा","मुंशी प्रेमचंद","जयशंकर प्रसाद","रामधारी सिंह दिनकर"], answer:"मुंशी प्रेमचंद"},
+      {q:"'सूर्यकांत त्रिपाठी' का उपनाम क्या है?", options:["महादेवी","हरिवंश","निराला","दिनकर"], answer:"निराला"},
+      {q:"'पंचतंत्र' की कहानियाँ किस भाषा में मूल रूप से लिखी गई?", options:["संस्कृत","हिन्दी","पाली","उर्दू"], answer:"संस्कृत"},
+      {q:"भारतीय संविधान की मूल भाषा क्या है?", options:["संस्कृत","हिन्दी","अंग्रेज़ी","उर्दू"], answer:"अंग्रेज़ी"},
+      {q:"महात्मा गांधी को 'राष्ट्रपिता' किसने कहा?", options:["नेहरू","सुभाष बोस","पटेल","सरोजिनी नायडू"], answer:"सरोजिनी नायडू"},
+      {q:"'कामायनी' महाकाव्य के रचयिता कौन हैं?", options:["दिनकर","निराला","जयशंकर प्रसाद","माखनलाल"], answer:"जयशंकर प्रसाद"},
+    ];
+
+    let currentQuestion = 0;
+    const questionContainer = document.getElementById("questionContainer");
+    const resultDiv = document.getElementById("result");
+
+    function loadQuestion(index){
+      let q = questions[index];
+      questionContainer.innerHTML = `
+        <div class="question"><b>प्रश्न ${index+1}. ${q.q}</b></div>
+        <div class="options">
+          ${q.options.map(opt => 
+            `<label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label>`
+          ).join("")}
+        </div>
+      `;
+    }
+
+    document.getElementById("nextBtn").onclick = function(){
+      if(currentQuestion < questions.length-1){ currentQuestion++; loadQuestion(currentQuestion); }
+    }
+    document.getElementById("prevBtn").onclick = function(){
+      if(currentQuestion > 0){ currentQuestion--; loadQuestion(currentQuestion); }
+    }
+
+    document.getElementById("submitBtn").onclick = function(){
+      let score = 0;
+      questions.forEach((q,i)=>{
+        let ans = (document.querySelector(`input[name="q${i}"]:checked`)||{}).value;
+        if(ans === q.answer) score++;
+      });
+      resultDiv.innerHTML = "आपका स्कोर: "+score+" / "+questions.length;
+    }
+
+    loadQuestion(currentQuestion);
+
+    // Timer
+    let time = 30*60;
+    const timeSpan = document.getElementById("time");
+    setInterval(()=>{
+      let min = Math.floor(time/60), sec = time%60;
+      timeSpan.textContent = `${min}:${sec<10?"0":""}${sec}`;
+      if(time>0) time--; 
+    },1000);
+  </script>
+</body>
+</html>
