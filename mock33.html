@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Test 33 - Army Agniveer GD</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+    h2 { text-align: center; }
+    .question { margin: 20px 0; font-size: 18px; }
+    .options label { display: block; margin: 8px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; cursor: pointer; }
+    .btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .next { background: #3498db; color: white; }
+    .back { background: #95a5a6; color: white; }
+    .submit { background: #2ecc71; color: white; width: 100%; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; text-align: right; color: red; }
+    .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .wrong { color: red; }
+    .correct { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">60:00</div>
+    <h2>Mock Test 33</h2>
+    <div id="quiz"></div>
+    <div class="btns">
+      <button class="back" onclick="prevQuestion()">⬅ Back</button>
+      <button class="next" onclick="nextQuestion()">Next ➡</button>
+    </div>
+    <button class="submit" onclick="submitQuiz()">Submit Test</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Timer
+    let time = 60 * 60;
+    const timerEl = document.getElementById("timer");
+    setInterval(() => {
+      if (time > 0) {
+        time--;
+        let m = String(Math.floor(time / 60)).padStart(2, "0");
+        let s = String(time % 60).padStart(2, "0");
+        timerEl.textContent = `${m}:${s}`;
+      }
+    }, 1000);
+
+    // Questions (50 total)
+    const questions = [
+      // ===== GK / Current Affairs =====
+      { question: "प्रश्न 1: भारत का राष्ट्रीय पशु कौन है?", options: ["हाथी", "बाघ", "सिंह", "हिरण"], answer: "बाघ" },
+      { question: "प्रश्न 2: 'आत्मनिर्भर भारत' अभियान कब शुरू हुआ?", options: ["2018", "2019", "2020", "2021"], answer: "2020" },
+      { question: "प्रश्न 3: अंतरराष्ट्रीय योग दिवस कब मनाया जाता है?", options: ["5 जून", "21 जून", "15 अगस्त", "2 अक्टूबर"], answer: "21 जून" },
+      { question: "प्रश्न 4: भारत के मुख्य न्यायाधीश (2023) कौन हैं?", options: ["एन.वी. रमना", "डी.वाई. चंद्रचूड़", "रंजन गोगोई", "एस.ए. बोबडे"], answer: "डी.वाई. चंद्रचूड़" },
+      { question: "प्रश्न 5: 'हर घर जल' योजना किस मंत्रालय से जुड़ी है?", options: ["स्वास्थ्य मंत्रालय", "गृह मंत्रालय", "जल शक्ति मंत्रालय", "वित्त मंत्रालय"], answer: "जल शक्ति मंत्रालय" },
+      { question: "प्रश्न 6: भारत में पहला AIIMS कहाँ स्थापित किया गया था?", options: ["दिल्ली", "लखनऊ", "भोपाल", "पटना"], answer: "दिल्ली" },
+      { question: "प्रश्न 7: नोबेल पुरस्कार जीतने वाले पहले भारतीय कौन थे?", options: ["सी.वी. रमन", "रवीन्द्रनाथ ठाकुर", "अमर्त्य सेन", "कैलाश सत्यार्थी"], answer: "रवीन्द्रनाथ ठाकुर" },
+      { question: "प्रश्न 8: 2023 क्रिकेट वर्ल्ड कप किस देश में हुआ?", options: ["भारत", "ऑस्ट्रेलिया", "इंग्लैंड", "दक्षिण अफ्रीका"], answer: "भारत" },
+      { question: "प्रश्न 9: 'भारत जोड़ो यात्रा' का नेतृत्व किसने किया?", options: ["अमित शाह", "नरेंद्र मोदी", "राहुल गांधी", "अरविंद केजरीवाल"], answer: "राहुल गांधी" },
+      { question: "प्रश्न 10: भारत का सबसे छोटा राज्य क्षेत्रफल के आधार पर कौन सा है?", options: ["गोवा", "सिक्किम", "त्रिपुरा", "नगालैंड"], answer: "गोवा" },
+      { question: "प्रश्न 11: विश्व पर्यावरण दिवस कब मनाया जाता है?", options: ["5 जून", "22 अप्रैल", "14 नवंबर", "2 दिसंबर"], answer: "5 जून" },
+      { question: "प्रश्न 12: G20 शिखर सम्मेलन 2023 कहाँ हुआ?", options: ["नई दिल्ली", "जकार्ता", "टोक्यो", "लंदन"], answer: "नई दिल्ली" },
+      { question: "प्रश्न 13: 'ऑपरेशन कमल' किस राज्य की राजनीति से जुड़ा है?", options: ["मध्य प्रदेश", "कर्नाटक", "उत्तर प्रदेश", "राजस्थान"], answer: "कर्नाटक" },
+      { question: "प्रश्न 14: ISRO का मुख्यालय कहाँ है?", options: ["नई दिल्ली", "बेंगलुरु", "चेन्नई", "हैदराबाद"], answer: "बेंगलुरु" },
+      { question: "प्रश्न 15: कांग्रेस पार्टी की स्थापना कब हुई?", options: ["1885", "1905", "1920", "1942"], answer: "1885" },
+      { question: "प्रश्न 16: 2023 ऑस्कर सर्वश्रेष्ठ गीत का विजेता कौन सा भारतीय गीत रहा?", options: ["जय हो", "नाटू नाटू", "शोले", "आरआरआर थीम"], answer: "नाटू नाटू" },
+      { question: "प्रश्न 17: 'पृथ्वी दिवस' कब मनाया जाता है?", options: ["22 मार्च", "22 अप्रैल", "5 जून", "14 नवंबर"], answer: "22 अप्रैल" },
+      { question: "प्रश्न 18: 'आदित्य L1 मिशन' का उद्देश्य क्या है?", options: ["मंगल का अध्ययन", "सूर्य का अध्ययन", "चंद्रमा का अध्ययन", "पृथ्वी का अध्ययन"], answer: "सूर्य का अध्ययन" },
+      { question: "प्रश्न 19: भारतीय संविधान के निर्माता कौन माने जाते हैं?", options: ["राजेंद्र प्रसाद", "डॉ. भीमराव अंबेडकर", "जवाहरलाल नेहरू", "सरदार पटेल"], answer: "डॉ. भीमराव अंबेडकर" },
+      { question: "प्रश्न 20: 'स्टैच्यू ऑफ यूनिटी' कहाँ स्थित है?", options: ["राजस्थान", "महाराष्ट्र", "गुजरात", "उत्तर प्रदेश"], answer: "गुजरात" },
+
+      // ===== English =====
+      { question: "Q21: Choose the correctly spelled word.", options: ["Definately", "Definitely", "Definetly", "Defanitely"], answer: "Definitely" },
+      { question: "Q22: Synonym of 'Rapid'?", options: ["Slow", "Quick", "Lazy", "Calm"], answer: "Quick" },
+      { question: "Q23: Antonym of 'Expand'?", options: ["Contract", "Enlarge", "Extend", "Broaden"], answer: "Contract" },
+      { question: "Q24: Fill in the blank: He ____ to school daily.", options: ["go", "goes", "going", "gone"], answer: "goes" },
+      { question: "Q25: One word for 'One who cannot read or write'?", options: ["Literate", "Illiterate", "Scholar", "Author"], answer: "Illiterate" },
+      { question: "Q26: Passive voice of 'She is writing a letter'?", options: ["A letter was written by her", "A letter is written by her", "A letter is being written by her", "A letter has been written by her"], answer: "A letter is being written by her" },
+      { question: "Q27: Correct idiom: 'A blessing in ____'.", options: ["Disguise", "Disgust", "Discount", "Disease"], answer: "Disguise" },
+      { question: "Q28: Change into past tense: 'They play cricket.'", options: ["They will play cricket", "They played cricket", "They playing cricket", "They had play cricket"], answer: "They played cricket" },
+      { question: "Q29: Opposite of 'Artificial'?", options: ["Natural", "Fake", "False", "Man-made"], answer: "Natural" },
+      { question: "Q30: Correct article: He is ___ honest man.", options: ["a", "an", "the", "no article"], answer: "an" },
+
+      // ===== Hindi Literature =====
+      { question: "प्रश्न 31: 'गोदान' उपन्यास किसने लिखा?", options: ["मुंशी प्रेमचंद", "जयशंकर प्रसाद", "रामधारी सिंह दिनकर", "महादेवी वर्मा"], answer: "मुंशी प्रेमचंद" },
+      { question: "प्रश्न 32: 'सूर्यकांत त्रिपाठी' का उपनाम क्या था?", options: ["दिनकर", "निराला", "महादेवी", "भारतेंदु"], answer: "निराला" },
+      { question: "प्रश्न 33: 'मधुशाला' के लेखक कौन हैं?", options: ["रामधारी सिंह दिनकर", "हरिवंश राय बच्चन", "सुमित्रानंदन पंत", "जयशंकर प्रसाद"], answer: "हरिवंश राय बच्चन" },
+      { question: "प्रश्न 34: 'साकेत' महाकाव्य किसने लिखा?", options: ["महादेवी वर्मा", "जयशंकर प्रसाद", "निराला", "दिनकर"], answer: "जयशंकर प्रसाद" },
+      { question: "प्रश्न 35: 'चंद्रकांता' उपन्यास किसने लिखा?", options: ["गोपालदास", "देवकीनंदन खत्री", "भारतेंदु", "प्रेमचंद"], answer: "देवकीनंदन खत्री" },
+      { question: "प्रश्न 36: 'भारत भारती' किसकी रचना है?", options: ["जयशंकर प्रसाद", "रामधारी सिंह दिनकर", "माखनलाल चतुर्वेदी", "मैथिलीशरण गुप्त"], answer: "मैथिलीशरण गुप्त" },
+      { question: "प्रश्न 37: 'विद्यापति' किस भाषा के कवि थे?", options: ["हिंदी", "बांग्ला", "मैथिली", "उर्दू"], answer: "मैथिली" },
+      { question: "प्रश्न 38: 'सप्तपर्णी गुफा' कहाँ स्थित है?", options: ["राजगृह", "श्रावस्ती", "कुशीनगर", "लुंबिनी"], answer: "राजगृह" },
+      { question: "प्रश्न 39: 'जय भारत जननी' गीत किसका है?", options: ["रवीन्द्रनाथ ठाकुर", "बंकिम चंद्र", "सुभाष चंद्र बोस", "महात्मा गांधी"], answer: "सुभाष चंद्र बोस" },
+      { question: "प्रश्न 40: 'पुष्प की अभिलाषा' कविता किसने लिखी?", options: ["जयशंकर प्रसाद", "माखनलाल चतुर्वेदी", "दिनकर", "महादेवी वर्मा"], answer: "माखनलाल चतुर्वेदी" },
+      { question: "प्रश्न 41: 'झाँसी की रानी' कविता किस कवि ने लिखी?", options: ["सुभद्राकुमारी चौहान", "महादेवी वर्मा", "दिनकर", "भारतेंदु"], answer: "सुभद्राकुमारी चौहान" },
+      { question: "प्रश्न 42: 'कामायनी' महाकाव्य किसने लिखा?", options: ["जयशंकर प्रसाद", "दिनकर", "पंत", "निराला"], answer: "जयशंकर प्रसाद" },
+      { question: "प्रश्न 43: 'रश्मिरथी' के लेखक कौन हैं?", options: ["रामधारी सिंह दिनकर", "मैथिलीशरण गुप्त", "निराला", "महादेवी वर्मा"], answer: "रामधारी सिंह दिनकर" },
+      { question: "प्रश्न 44: 'भारतेंदु हरिश्चंद्र' को किस उपाधि से जाना जाता है?", options: ["आधुनिक हिंदी का जनक", "काव्य सम्राट", "कवि कोकिल", "महाकवि"], answer: "आधुनिक हिंदी का जनक" },
+      { question: "प्रश्न 45: 'प्रिय प्रवास' कृति के लेखक कौन हैं?", options: ["सूर्यकांत त्रिपाठी", "जयशंकर प्रसाद", "अयोध्यासिंह उपाध्याय हरिऔध", "मैथिलीशरण गुप्त"], answer: "अयोध्यासिंह उपाध्याय हरिऔध" },
+      { question: "प्रश्न 46: 'निराला' किस काव्य धारा के कवि माने जाते हैं?", options: ["रीति कालीन", "छायावाद", "भक्तिकाल", "आधुनिक"], answer: "छायावाद" },
+      { question: "प्रश्न 47: 'गोपालदास नीरज' किस विधा के लिए प्रसिद्ध थे?", options: ["निबंध", "कविता", "कहानी", "नाटक"], answer: "कविता" },
+      { question: "प्रश्न 48: 'भारत कोकिला' की उपाधि किसे दी गई?", options: ["महादेवी वर्मा", "सुभद्राकुमारी चौहान", "सरोजिनी नायडू", "अमृता प्रीतम"], answer: "सरोजिनी नायडू" },
+      { question: "प्रश्न 49: 'साकेत' और 'कामायनी' किस साहित्यकार की रचनाएँ हैं?", options: ["जयशंकर प्रसाद", "दिनकर", "महादेवी वर्मा", "निराला"], answer: "जयशंकर प्रसाद" },
+      { question: "प्रश्न 50: 'रामचरितमानस' के रचयिता कौन हैं?", options: ["वाल्मीकि", "तुलसीदास", "वेद व्यास", "भवभूति"], answer: "तुलसीदास" }
+    ];
+
+    let current = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      const q = questions[current];
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = `
+        <div class="question"><b>${q.question}</b></div>
+        <div class="options">
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${current}" value="${opt}" ${answers[current] === opt ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (current > 0) {
+        current--;
+        loadQuestion();
+      }
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (selected) answers[current] = selected.value;
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      let resultHTML = "<h3>Result</h3>";
+      questions.forEach((q, i) => {
+        let userAns = answers[i] || "नहीं चुना";
+        let correct = userAns === q.answer;
+        if (correct) score++;
+        resultHTML += `
+          <p><b>${q.question}</b><br>
+          आपका उत्तर: <span class="${correct ? 'correct' : 'wrong'}">${userAns}</span><br>
+          सही उत्तर: <span class="correct">${q.answer}</span></p>
+        `;
+      });
+      resultHTML += `<h3>कुल स्कोर: ${score} / ${questions.length}</h3>`;
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+
+    // पहला सवाल पेज लोड पर दिखे
+    loadQuestion();
+  </script>
+</body>
+</html>
